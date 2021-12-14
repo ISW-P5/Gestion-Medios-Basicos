@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticar</title>
+
+    <!--JQuery-->
+    <script src="lib/jquery 3.6/jquery-3.6.0.min.js"></script>
+
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="lib/bootstrap 5.1/css/bootstrap.min.css">
+    <script src="lib/bootstrap 5.1/js/bootstrap.min.js"></script>
+
+    <!-- Los iconos tipo Solid de Fontawesome-->
+    <link rel="stylesheet" href="lib/font awesome 5.0.7/solid.css">
+    <script src="lib/font awesome 5.0.7/all.js"></script>
+
+    <!--CSS Customer-->
+    <link rel="stylesheet" href="style/login.css">
+</head>
+<body>
+    <div class="modal-dialog text-center">
+        <div class="col-sm-8 main-section">
+            <div class="modal-content">
+                <div class="col-12 user-img">
+                    <img src="img/avatar3.png">
+                </div>
+                <form class="col-12">                    
+                    <div class="form-group" id="user-group">
+                        <i class="fas fa-user-circle icon"></i> <input type="text" class="form-control" id="user" placeholder="Nombre de Usuario"/>
+                    </div>                     
+                    <div class="form-group mt-3" id="contraseña-group">
+                        <i class="fas fa-lock icon"></i> <input type="password" class="form-control" id="password" placeholder="Contraseña"/>
+                    </div>
+                    <input value="Autenticar" onclick="login()" type="button" class="btn btn btn-dark btn-lg mt-3"/>
+                </form>
+                <div class="col-12 forgot">
+                    <a href="#">Recordar contraseña?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $("form").keypress((e) => {
+        if(e.which == 13) {
+            login();
+        }
+    });
+
+    function login(){
+        var user = document.getElementById("user").value;
+        var pass = document.getElementById("password").value;
+        
+        if (user == "" || pass == "") {
+            alert("Los campos no pueden estar vacíos.");
+            return;
+        }            
+
+        if(user == "admin" && pass == "admin"){
+            window.location.href = "principal_page_admin.html";            
+        } else if(user == "jdepa" && pass == "jdepa"){
+            window.location.href = "principal_page_jefe_depa.html";
+        } else if(user == "vicedecano" && pass == "vicedecano") {
+            window.location.href = "principal_page_vicedecano.html";
+        } else {
+            alert("Usuario o contraseña incorrectos.");
+        }
+    }   
+</script>

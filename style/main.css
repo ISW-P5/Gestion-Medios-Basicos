@@ -1,0 +1,40 @@
+body{
+    background: url(../img/background12.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+
+.avatar{
+    width: 60px;
+    height: 75px;
+}
+
+.espaciado{
+    height: 42px;
+    font-size: 18px;
+    border: 0;
+    padding-left: 50px;
+    border-radius: 5px;
+}
+
+.icon{
+    position: absolute;
+    left: 10px;
+    font-size: 30px;
+    padding-top: 10px;
+}
+
+.color{
+    color: #804000;
+}
+
+.avatar-generico{
+    width: 40px;
+    height: 40px;
+    opacity: 0.40;
+}
+
+/*footer{
+    color: black;
+    padding: 15px 0px 15px 0px;
+    text-align: center;
+}*/
