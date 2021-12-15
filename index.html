@@ -27,48 +27,26 @@
                 <div class="col-12 user-img">
                     <img src="img/avatar3.png">
                 </div>
-                <form class="col-12">                    
+                <div class="alert alert-danger" id="message-error" role="alert"></div>
+                <form class="col-12" method="post" id="form-login">                    
                     <div class="form-group" id="user-group">
-                        <i class="fas fa-user-circle icon"></i> <input type="text" class="form-control" id="user" placeholder="Nombre de Usuario"/>
+                        <i class="fas fa-user-circle icon"></i>
+                        <input type="text" class="form-control" name="username" placeholder="Nombre de Usuario" />
+                        <div class="alert alert-danger p-1" id="username-error" role="alert">Campo requerido.</div>
                     </div>                     
                     <div class="form-group mt-3" id="contraseña-group">
-                        <i class="fas fa-lock icon"></i> <input type="password" class="form-control" id="password" placeholder="Contraseña"/>
+                        <i class="fas fa-lock icon"></i>
+                        <input type="password" class="form-control" name="password" placeholder="Contraseña" />
+                        <div class="alert alert-danger p-1" id="password-error" role="alert">Campo requerido y mínimo 4 caracteres.</div>
                     </div>
-                    <input value="Autenticar" onclick="login()" type="button" class="btn btn btn-dark btn-lg mt-3"/>
+                    <input value="Autenticar" type="submit" class="btn btn btn-dark btn-lg mt-3"/>
                 </form>
                 <div class="col-12 forgot">
-                    <a href="#">Recordar contraseña?</a>
+                    <a href="#">¿Recordar contraseña?</a>
                 </div>
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="scripts/login.js"></script>
 </body>
 </html>
-
-<script type="text/javascript">
-    $("form").keypress((e) => {
-        if(e.which == 13) {
-            login();
-        }
-    });
-
-    function login(){
-        var user = document.getElementById("user").value;
-        var pass = document.getElementById("password").value;
-        
-        if (user == "" || pass == "") {
-            alert("Los campos no pueden estar vacíos.");
-            return;
-        }            
-
-        if(user == "admin" && pass == "admin"){
-            window.location.href = "principal_page_admin.html";            
-        } else if(user == "jdepa" && pass == "jdepa"){
-            window.location.href = "principal_page_jefe_depa.html";
-        } else if(user == "vicedecano" && pass == "vicedecano") {
-            window.location.href = "principal_page_vicedecano.html";
-        } else {
-            alert("Usuario o contraseña incorrectos.");
-        }
-    }   
-</script>
