@@ -59,38 +59,47 @@
 <body>
     <div class="container">
         <div class="col-md-6 bg-light mt-3 rounded" style="opacity: .95;">
-            <form class="form-group ms-3 me-3">
+            <form class="form-group ms-3 me-3" id="form-user">
                 <div class="row">
                     <div class="col mt-3">
-                      <input type="text" class="form-control" placeholder="Nombre" aria-label="First name">
+                      <input type="text" class="form-control" placeholder="Nombre" name="name" aria-label="First name">
                     </div>
                     <div class="col mt-3">
-                      <input type="text" class="form-control" placeholder="Apellidos" aria-label="Last name">
+                      <input type="text" class="form-control" placeholder="Apellidos" name="last_name" aria-label="Last name">
                     </div>
                 </div>
                 <div class="input-group flex-nowrap mt-3">
                     <span class="input-group-text" id="addon-wrapping">@</span>
-                    <input type="text" class="form-control" placeholder="Usuario" aria-label="Username" aria-describedby="addon-wrapping">
+                    <input type="text" class="form-control" placeholder="Usuario" name="username" aria-label="Username" aria-describedby="addon-wrapping">
                 </div>
                 <div class="mb-3 mt-3">
-                  <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Contraseña">
+                  <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Contraseña">
                 </div>
-                <select class="form-select mt-3" aria-label="Default select example">
+                <select class="form-select mt-3" aria-label="Default select example" name="rol">
                     <option selected disabled>Seleccione el rol del usuario en el sistema</option>
                     <option value="1">Administrador del Sistema</option>
                     <option value="2">Vicedecano de Administración</option>
                     <option value="3">Jefe de Departamento</option>
                 </select>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button class="btn btn-secondary me-md-2 mb-3 mt-3" type="button">Crear Usuario</button>
+                    <button class="btn btn-secondary me-md-2 mb-3 mt-3" type="submit">Crear Usuario</button>
                     <button class="btn btn-secondary mb-3 mt-3" type="button">Cancelar</button>
                 </div>
               </form>
         </div>
-    </div>  
+    </div>
+    <script type="text/javascript" src="scripts/validator.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $(document).on('submit', 'form#form-user', () => {
+          let nombre = validator.getValueInput("name"), 
+              apellido = validator.getValueInput("last_name"), 
+              username = validator.getValueInput("username"), 
+              password = validator.getValueInput("password"), 
+              rol = validator.getValueSelect("rol");
+          return false;
+        });
+      });
+    </script>
 </body>
-
-<!--<footer class="bg-light">
-  <h6>Universidad de las Ciencias Informáticas ©2021</h6>
-</footer>-->
 </html>
