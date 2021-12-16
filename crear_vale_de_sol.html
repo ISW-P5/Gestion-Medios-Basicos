@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión de Medios Básicos</title>
 
-    <!--JQuery-->
-    <script src="lib/jquery 3.6/jquery-3.6.0.min.js"></script>
+
 
     <!--Bootstrap-->
     <link rel="stylesheet" href="lib/bootstrap 5.1/css/bootstrap.min.css">
@@ -59,23 +58,52 @@
 <body>
 <div class="container">
     <div class="col-md-6 bg-light mt-3 rounded" style="opacity: .95;">
-        <form class="form-group ms-3 me-3 pt-3">
+        <form class="form-group ms-3 me-3 pt-3" id="form_vale_de_sol">
             <div class="mb-3">
-                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nombre del Solicitante">
+                <input type="text" class="form-control" name="nombre_del_solicitante" id="exampleFormControlInput1" placeholder="Nombre del Solicitante">
+                <div class="alert alert-danger p-1" id="nombre_del_solicitante" role="alert" style="display: none;">Campo requerido.</div>
             </div>
             <div class="mb-3 mt-3">
-                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Medio Básico que Solicita">
+                <input type="text" class="form-control" name="medio_basico_que_solicita" id="exampleFormControlInput1" placeholder="Medio Básico que Solicita">
+                <div class="alert alert-danger p-1" id="nombre_del_solicitante" role="alert" style="display: none;">Campo requerido.</div>
             </div>
             <div class="mb-3 mt-3">
-                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Departamento">
+                <input type="text" class="form-control" name="departamento" id="exampleFormControlInput1" placeholder="Departamento">
+                <div class="alert alert-danger p-1" id="nombre_del_solicitante" role="alert" style="display: none;">Campo requerido.</div>
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button class="btn btn-secondary me-md-2 mb-3" type="button">Exportar</button>
-                <button class="btn btn-secondary mb-3" type="button">Cancelar</button>
+                <button class="btn btn-secondary me-md-2 mb-3" type="submit">Exportar</button>
+                <button class="btn btn-secondary mb-3" type="reset">Cancelar</button>
             </div>
         </form>
     </div>
 </div>
+<!--JQuery-->
+<script src="lib/jquery 3.6/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="scripts/validator.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on('submit', 'form#form_vale_de_sol', () => {
+            let nombre = validator.getValueInput("nombre_del_solicitante"),
+                apellido = validator.getValueInput("medio_basico_que_solicita"),
+                username = validator.getValueInput("departamento"),
+
+                error = false;
+
+            // Validate Nombre
+            error = validator.validate(validator.isNull(nombre) || validator.isEmpty(nombre), "div#nombre_del_solicitante");
+
+            // Validate Apellido
+            error = validator.validate(validator.isNull(apellido) || validator.isEmpty(apellido), "div#medio_basico_que_solicita");
+
+            // Validate Usuario
+            error = validator.validate(validator.isNull(username) || validator.isEmpty(username), "div#departamento");
+
+
+            return !error;
+        });
+    });
+</script>
 
 </body>
 
