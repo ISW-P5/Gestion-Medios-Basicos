@@ -6,15 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión de Medios Básicos</title>
 
-
-
     <!--Bootstrap-->
     <link rel="stylesheet" href="lib/bootstrap 5.1/css/bootstrap.min.css">
 
-
     <!-- Los iconos tipo Solid de Fontawesome-->
     <link rel="stylesheet" href="lib/fontawesome 5.13.0/css/solid.min.css">
-
 
     <!--CSS Customer-->
     <link rel="stylesheet" href="style/main.css">
@@ -64,19 +60,19 @@
             <form class="form-group ms-3 me-3 pt-3" id="form_expediente">
                 <div class="mb-3">
                     <input type="text" class="form-control" name="Nombre_del_Medio_Básico" id="exampleFormControlInput1" placeholder="Nombre_del_Medio_Básico">
-                    <div class="alert alert-danger p-1" id="Nombre_del_Medio_Básico" role="alert" style="display: none;">Campo requerido.</div>
+                    <div class="alert alert-danger p-1" id="Nombre_del_Medio_Básico" role="alert" style="display: none;">Campo requerido y solo acepta caracteres.</div>
                 </div>
                 <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" name="No_Inventario" id="exampleFormControlInput1" placeholder="No_Inventario">
-                    <div class="alert alert-danger p-1" id="No_Inventario" role="alert" style="display: none;">Campo requerido.</div>
+                    <input type="text" class="form-control" name="No_Inventario" id="exampleFormControlInput2" placeholder="No_Inventario">
+                    <div class="alert alert-danger p-1" id="No_Inventario" role="alert" style="display: none;">Campo requerido y solo acepta combinaciones de letras y numeros.</div>
                 </div>
                 <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" name="Nombre_del_Responsable" id="exampleFormControlInput1" placeholder="Nombre_del_Responsable">
-                    <div class="alert alert-danger p-1" id="Nombre_del_Responsable" role="alert" style="display: none;">Campo requerido.</div>
+                    <input type="text" class="form-control" name="Nombre_del_Responsable" id="exampleFormControlInput3" placeholder="Nombre_del_Responsable">
+                    <div class="alert alert-danger p-1" id="Nombre_del_Responsable" role="alert" style="display: none;">Campo requerido y solo acepta caracteres.</div>
                 </div>
                 <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" name="Ubicación_del_Medio_Básico" id="exampleFormControlInput1" placeholder="Ubicación_del_Medio_Básico">
-                    <div class="alert alert-danger p-1" id="Ubicación_del_Medio_Básico" role="alert" style="display: none;">Campo requerido.</div>
+                    <input type="text" class="form-control" name="Ubicación_del_Medio_Básico" id="exampleFormControlInput4" placeholder="Ubicación_del_Medio_Básico">
+                    <div class="alert alert-danger p-1" id="Ubicación_del_Medio_Básico" role="alert" style="display: none;">Campo requerido y solo acepta caracteres.</div>
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <button class="btn btn-secondary me-md-2 mb-3" type="submit">Crear Expediente</button>
@@ -98,22 +94,26 @@
                 let nombre_del_MB = validator.getValueInput("Nombre_del_Medio_Básico"),
                     no_inventario = validator.getValueInput("No_Inventario"),
                     Nombre_del_resp = validator.getValueInput("Nombre_del_Responsable"),
-                    Uicacion_del_MB = validator.getValueInput("Ubicación_del_Medio_Básico"),
-                    error = false;
+                    Uicacion_del_MB = validator.getValueInput("Ubicación_del_Medio_Básico");
 
-                // Validate Nombre del solicitante
-                error = validator.validate(validator.isNull(nombre_del_MB) || validator.isEmpty(nombre_del_MB), "div#Nombre_del_Medio_Básico");
+                // Validate all fields
+                return ![
+                    // Validate Nombre del solicitante
+                    validator.validate(validator.isNull(nombre_del_MB) || validator.isEmpty(nombre_del_MB) ||
+                                       !validator.onlyLetters(nombre_del_MB), "div#Nombre_del_Medio_Básico"),
 
-                // Validate cargo del solicitante
-                error = validator.validate(validator.isNull(no_inventario) || validator.isEmpty(no_inventario), "div#No_Inventario");
+                    // Validate no inventario
+                    validator.validate(validator.isNull(no_inventario) || validator.isEmpty(no_inventario) ||
+                                       !validator.onlyLettersAndNumbers(no_inventario), "div#No_Inventario"),
 
-                // Validate no inventario
-                error = validator.validate(validator.isNull(Nombre_del_resp) || validator.isEmpty(Nombre_del_resp), "div#Nombre_del_Responsable");
+                    // Validate cargo del solicitante
+                    validator.validate(validator.isNull(Nombre_del_resp) || validator.isEmpty(Nombre_del_resp) ||
+                                       !validator.onlyLetters(Nombre_del_resp), "div#Nombre_del_Responsable"),
 
-                // Validate ubicacion
-                error = validator.validate(validator.isNull(Uicacion_del_MB) || validator.isEmpty(Uicacion_del_MB), "div#Ubicación_del_Medio_Básico");
-
-                return !error;
+                    // Validate ubicacion
+                    validator.validate(validator.isNull(Uicacion_del_MB) || validator.isEmpty(Uicacion_del_MB) ||
+                                       !validator.onlyLetters(Uicacion_del_MB), "div#Ubicación_del_Medio_Básico"),
+                ].some((v) => v);
             });
         });
     </script>

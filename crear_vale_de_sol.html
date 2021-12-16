@@ -6,15 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión de Medios Básicos</title>
 
-
-
     <!--Bootstrap-->
     <link rel="stylesheet" href="lib/bootstrap 5.1/css/bootstrap.min.css">
-    <script src="lib/bootstrap 5.1/js/bootstrap.min.js"></script>
 
     <!-- Los iconos tipo Solid de Fontawesome-->
     <link rel="stylesheet" href="lib/fontawesome 5.13.0/css/solid.min.css">
-    <script src="lib/fontawesome 5.13.0/js/all.min.js"></script>
 
     <!--CSS Customer-->
     <link rel="stylesheet" href="style/main.css">
@@ -61,15 +57,15 @@
         <form class="form-group ms-3 me-3 pt-3" id="form_vale_de_sol">
             <div class="mb-3">
                 <input type="text" class="form-control" name="nombre_del_solicitante" id="exampleFormControlInput1" placeholder="Nombre del Solicitante">
-                <div class="alert alert-danger p-1" id="nombre_del_solicitante" role="alert" style="display: none;">Campo requerido.</div>
+                <div class="alert alert-danger p-1" id="nombre_del_solicitante" role="alert" style="display: none;">Campo requerido y solo se aceptan letras.</div>
             </div>
             <div class="mb-3 mt-3">
-                <input type="text" class="form-control" name="medio_basico_que_solicita" id="exampleFormControlInput1" placeholder="Medio Básico que Solicita">
-                <div class="alert alert-danger p-1" id="nombre_del_solicitante" role="alert" style="display: none;">Campo requerido.</div>
+                <input type="text" class="form-control" name="medio_basico_que_solicita" id="exampleFormControlInput2" placeholder="Medio Básico que Solicita">
+                <div class="alert alert-danger p-1" id="medio_basico_que_solicita" role="alert" style="display: none;">Campo requerido.</div>
             </div>
             <div class="mb-3 mt-3">
-                <input type="text" class="form-control" name="departamento" id="exampleFormControlInput1" placeholder="Departamento">
-                <div class="alert alert-danger p-1" id="nombre_del_solicitante" role="alert" style="display: none;">Campo requerido.</div>
+                <input type="text" class="form-control" name="departamento" id="exampleFormControlInput3" placeholder="Departamento">
+                <div class="alert alert-danger p-1" id="departamento" role="alert" style="display: none;">Campo requerido.</div>
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button class="btn btn-secondary me-md-2 mb-3" type="submit">Exportar</button>
@@ -80,27 +76,28 @@
 </div>
 <!--JQuery-->
 <script src="lib/jquery 3.6/jquery-3.6.0.min.js"></script>
+<script src="lib/bootstrap 5.1/js/bootstrap.min.js"></script>
+<script src="lib/fontawesome 5.13.0/js/all.min.js"></script>
 <script type="text/javascript" src="scripts/validator.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $(document).on('submit', 'form#form_vale_de_sol', () => {
             let nombre = validator.getValueInput("nombre_del_solicitante"),
-                apellido = validator.getValueInput("medio_basico_que_solicita"),
-                username = validator.getValueInput("departamento"),
+                medio = validator.getValueInput("medio_basico_que_solicita"),
+                departamento = validator.getValueInput("departamento");
 
-                error = false;
+            // Validate all fields
+            return ![
+                // Validate Nombre del solicitante
+                validator.validate(validator.isNull(nombre) || validator.isEmpty(nombre) ||
+                                   !validator.onlyLetters(nombre), "div#nombre_del_solicitante"),
 
-            // Validate Nombre
-            error = validator.validate(validator.isNull(nombre) || validator.isEmpty(nombre), "div#nombre_del_solicitante");
+                // Validate Medio Basico
+                validator.validate(validator.isNull(medio) || validator.isEmpty(medio), "div#medio_basico_que_solicita"),
 
-            // Validate Apellido
-            error = validator.validate(validator.isNull(apellido) || validator.isEmpty(apellido), "div#medio_basico_que_solicita");
-
-            // Validate Usuario
-            error = validator.validate(validator.isNull(username) || validator.isEmpty(username), "div#departamento");
-
-
-            return !error;
+                // Validate Departamento
+                validator.validate(validator.isNull(departamento) || validator.isEmpty(departamento), "div#departamento"),
+            ].some((v) => v);
         });
     });
 </script>

@@ -9,10 +9,8 @@
     <!--Bootstrap-->
     <link rel="stylesheet" href="lib/bootstrap 5.1/css/bootstrap.min.css">
 
-
     <!-- Los iconos tipo Solid de Fontawesome-->
     <link rel="stylesheet" href="lib/fontawesome 5.13.0/css/solid.min.css">
-
 
     <!--CSS Customer-->
     <link rel="stylesheet" href="style/main.css">
@@ -65,24 +63,24 @@
             <form class="form-group ms-3 me-3 pt-3" id="form_acta">
                 <div class="mb-3">
                     <input type="text" class="form-control" name="nombre_del_responsable" id="exampleFormControlInput1" placeholder="Nombre del Responsable">
-                    <div class="alert alert-danger p-1" id="nombre_del_responsable" role="alert" style="display: none;">Campo requerido.</div>
+                    <div class="alert alert-danger p-1" id="nombre_del_responsable" role="alert" style="display: none;">Campo requerido y solo se aceptan letras.</div>
                 </div>
                 <div class="mb-3 mt-3">
-                    <input type="text" class="form-control"name="carnet_de_identidad" id="exampleFormControlInput1" placeholder="Carnet de Identidad">
-                    <div class="alert alert-danger p-1" id="carnet_de_identidad" role="alert" style="display: none;">Campo requerido.</div>
+                    <input type="text" class="form-control"name="carnet_de_identidad" id="exampleFormControlInput2" placeholder="Carnet de Identidad">
+                    <div class="alert alert-danger p-1" id="carnet_de_identidad" role="alert" style="display: none;">Campo requerido y el carnet de identidad debe ser valido.</div>
                 </div>
                 <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" name="no_inventario_de_mb" id="exampleFormControlInput1" placeholder="No. Inventario del Medio Básico">
-                    <div class="alert alert-danger p-1" id="no_inventario_de_mb" role="alert" style="display: none;">Campo requerido.</div>
+                    <input type="text" class="form-control" name="no_inventario_de_mb" id="exampleFormControlInput3" placeholder="No. Inventario del Medio Básico">
+                    <div class="alert alert-danger p-1" id="no_inventario_de_mb" role="alert" style="display: none;">Campo requerido y solo acepta combinaciones de letras y numeros.</div>
                 </div>
-                <div class="input-group date mb-3 mt-3" data-provide="datepicker">
+                <div class="input-group date mt-3" data-provide="datepicker">
                     <input type="text" name="fecha" class="form-control datepicker" placeholder="Seleccione la Fecha">
 
                     <div class="input-group-addon">
-                        <div class="alert alert-danger p-1" id="fecha" role="alert" style="display: none;">Campo requerido.</div>
+                    </div>
                 </div>
-                </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <div class="alert alert-danger p-1" id="fecha" role="alert" style="display: none;">Campo requerido y debe de ser en formato MM/DD/YYYY.</div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
                     <button class="btn btn-secondary me-md-2 mb-3" type="submit">Exportar</button>
                     <button class="btn btn-secondary mb-3" type="reset">Cancelar</button>
                 </div>
@@ -102,23 +100,32 @@
             $(document).on('submit', 'form#form_acta', () => {
                 let nombre_del_responsable = validator.getValueInput("nombre_del_responsable"),
                     carnet_de_identidad = validator.getValueInput("carnet_de_identidad"),
-                    No_inventario_de_MB = validator.getValueInput("No_inventario_de_MB"),
-                    fecha = validator.getValueInput("fecha"),
-                    error = false;
+                    No_inventario_de_MB = validator.getValueInput("no_inventario_de_mb"),
+                    fecha = validator.getValueInput("fecha");
 
-                // Validate Nombre del solicitante
-                error = validator.validate(validator.isNull(nombre_del_responsable) || validator.isEmpty(nombre_del_responsable), "div#nombre_del_responsable");
+                // Validate all fields
+                return ![
+                    // Validate Nombre del solicitante
+                    validator.validate(validator.isNull(nombre_del_responsable) ||
+                                       validator.isEmpty(nombre_del_responsable) ||
+                                       !validator.onlyLetters(nombre_del_responsable), "div#nombre_del_responsable"),
 
-                // Validate cargo del solicitante
-                error = validator.validate(validator.isNull(carnet_de_identidad) || validator.isEmpty(carnet_de_identidad), "div#carnet_de_identidad");
+                    // Validate carnet de identidad
+                    validator.validate(validator.isNull(carnet_de_identidad) ||
+                                       validator.isEmpty(carnet_de_identidad) ||
+                                       !validator.equalLength(11, carnet_de_identidad) ||
+                                       !validator.onlyNumbers(carnet_de_identidad), "div#carnet_de_identidad"),
 
-                // Validate no inventario
-                error = validator.validate(validator.isNull(No_inventario_de_MB) || validator.isEmpty(No_inventario_de_MB), "div#no_inventario_de_mb");
+                    // Validate no inventario
+                    validator.validate(validator.isNull(No_inventario_de_MB) ||
+                                       validator.isEmpty(No_inventario_de_MB) ||
+                                       !validator.onlyLettersAndNumbers(No_inventario_de_MB),
+                                        "div#no_inventario_de_mb"),
 
-                // Validate ubicacion
-                error = validator.validate(validator.isNull(fecha) || validator.isEmpty(fecha), "div#fecha");
-
-                return !error;
+                    // Validate fecha
+                    validator.validate(validator.isNull(fecha) || validator.isEmpty(fecha) ||
+                                       !validator.isDate(fecha), "div#fecha"),
+                ].some((v) => v);
             });
         });
     </script>

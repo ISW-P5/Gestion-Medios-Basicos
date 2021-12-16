@@ -6,15 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión de Medios Básicos</title>
 
-
-
     <!--Bootstrap-->
     <link rel="stylesheet" href="lib/bootstrap 5.1/css/bootstrap.min.css">
-    <script src="lib/bootstrap 5.1/js/bootstrap.min.js"></script>
 
     <!-- Los iconos tipo Solid de Fontawesome-->
     <link rel="stylesheet" href="lib/fontawesome 5.13.0/css/solid.min.css">
-    <script src="lib/fontawesome 5.13.0/js/all.min.js"></script>
 
     <!--CSS Customer-->
     <link rel="stylesheet" href="style/main.css">
@@ -62,23 +58,23 @@
         <form class="form-group ms-3 me-3 pt-3" id="form_vale_de_mov">
             <div class="mb-3">
                 <input type="text" class="form-control" name="nombre_del_solicitante" id="exampleFormControlInput1" placeholder="Nombre del Solicitante">
-                <div class="alert alert-danger p-1" id="nombre_del_solicitante" role="alert" style="display: none;">Campo requerido.</div>
+                <div class="alert alert-danger p-1" id="nombre_del_solicitante" role="alert" style="display: none;">Campo requerido y solo se aceptan caracteres.</div>
             </div>
             <div class="mb-3 mt-3">
-                <input type="text" class="form-control" name="cargo_del_solicitante" id="exampleFormControlInput1" placeholder="Cargo del Solicitante">
-                <div class="alert alert-danger p-1" id="cargo_del_solicitante" role="alert" style="display: none;">Campo requerido.</div>
+                <input type="text" class="form-control" name="cargo_del_solicitante" id="exampleFormControlInput2" placeholder="Cargo del Solicitante">
+                <div class="alert alert-danger p-1" id="cargo_del_solicitante" role="alert" style="display: none;">Campo requerido y solo se aceptan caracteres.</div>
             </div>
             <div class="mb-3 mt-3">
-                <input type="text" class="form-control" name="No_inventario_de_MB" id="exampleFormControlInput1" placeholder="No. Inventario de MB">
-                <div class="alert alert-danger p-1" id="No_inventario_de_MB" role="alert" style="display: none;">Campo requerido.</div>
+                <input type="text" class="form-control" name="No_inventario_de_MB" id="exampleFormControlInput3" placeholder="No. Inventario de MB">
+                <div class="alert alert-danger p-1" id="No_inventario_de_MB" role="alert" style="display: none;">Campo requerido y solo se aceptan caracteres y numeros.</div>
             </div>
             <div class="mb-3 mt-3">
-                <input type="text" class="form-control" name="ubicacion_actual" id="exampleFormControlInput1" placeholder="Ubicación Actual ">
-                <div class="alert alert-danger p-1" id="ubicacion_actual" role="alert" style="display: none;">Campo requerido.</div>
+                <input type="text" class="form-control" name="ubicacion_actual" id="exampleFormControlInput4" placeholder="Ubicación Actual ">
+                <div class="alert alert-danger p-1" id="ubicacion_actual" role="alert" style="display: none;">Campo requerido y solo se aceptan caracteres.</div>
             </div>
             <div class="mb-3 mt-3">
-                <input type="text" class="form-control" name="ubicacion_nueva" id="exampleFormControlInput1" placeholder="Ubicación Nueva ">
-                <div class="alert alert-danger p-1" id="ubicacion_nueva" role="alert" style="display: none;">Campo requerido.</div>
+                <input type="text" class="form-control" name="ubicacion_nueva" id="exampleFormControlInput5" placeholder="Ubicación Nueva ">
+                <div class="alert alert-danger p-1" id="ubicacion_nueva" role="alert" style="display: none;">Campo requerido y solo se aceptan caracteres.</div>
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button class="btn btn-secondary me-md-2 mb-3" type="submit">Exportar</button>
@@ -90,6 +86,8 @@
 
 <!--JQuery-->
 <script src="lib/jquery 3.6/jquery-3.6.0.min.js"></script>
+<script src="lib/bootstrap 5.1/js/bootstrap.min.js"></script>
+<script src="lib/fontawesome 5.13.0/js/all.min.js"></script>
 <script type="text/javascript" src="scripts/validator.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -98,26 +96,30 @@
                 cargo = validator.getValueInput("cargo_del_solicitante"),
                 No_inv = validator.getValueInput("No_inventario_de_MB"),
                 ubicacion_a = validator.getValueInput("ubicacion_actual"),
-                ubicacion_n = validator.getValueInput("ubicacion_nueva"),
-                rol = validator.getValueSelect("rol"),
-                error = false;
+                ubicacion_n = validator.getValueInput("ubicacion_nueva");
 
-            // Validate Nombre del solicitante
-            error = validator.validate(validator.isNull(nombre_sol) || validator.isEmpty(nombre_sol), "div#nombre_del_solicitante");
+            // Validate all fields
+            return ![
+                // Validate Nombre del solicitante
+                validator.validate(validator.isNull(nombre_sol) || validator.isEmpty(nombre_sol) ||
+                                   !validator.onlyLetters(nombre_sol), "div#nombre_del_solicitante"),
 
-            // Validate cargo del solicitante
-            error = validator.validate(validator.isNull(cargo) || validator.isEmpty(cargo), "div#cargo_del_solicitante");
+                // Validate cargo del solicitante
+                validator.validate(validator.isNull(cargo) || validator.isEmpty(cargo) ||
+                                   !validator.onlyLetters(cargo), "div#cargo_del_solicitante"),
 
-            // Validate no inventario
-            error = validator.validate(validator.isNull(No_inv) || validator.isEmpty(No_inv), "div#No_inventario_de_MB");
+                // Validate no inventario
+                validator.validate(validator.isNull(No_inv) || validator.isEmpty(No_inv) ||
+                                   !validator.onlyLettersAndNumbers(No_inv), "div#No_inventario_de_MB"),
 
-            // Validate ubicacion
-            error = validator.validate(validator.isNull(ubicacion_a) || validator.isEmpty(ubicacion_a),"div#ubicacion_actual");
+                // Validate ubicacion
+                validator.validate(validator.isNull(ubicacion_a) || validator.isEmpty(ubicacion_a) ||
+                                   !validator.onlyLetters(ubicacion_a),"div#ubicacion_actual"),
 
-            // Validate
-            error = validator.validate(validator.isNull(ubicacion_n) || validator.isEmpty(ubicacion_n), "div#ubicacion_nueva");
-
-            return !error;
+                // Validate
+                validator.validate(validator.isNull(ubicacion_n) || validator.isEmpty(ubicacion_n) ||
+                                   !validator.onlyLetters(ubicacion_n), "div#ubicacion_nueva"),
+            ].some((v) => v);
         });
     });
 </script>
