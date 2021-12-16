@@ -88,8 +88,6 @@ function hide_errors() {
     $("div#password-error").hide();
 }
 
-hide_errors();
-
 $(document).ready(function () {
     // Capturar evento onSubmit del formulario y validarlo
     $(document).on('submit', 'form#form-login', () => validate_login());
