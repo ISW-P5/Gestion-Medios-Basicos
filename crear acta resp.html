@@ -64,7 +64,7 @@
         <div class="col-md-6 bg-light mt-3 rounded" style="opacity: .95;">
             <form class="form-group ms-3 me-3 pt-3" id="form_acta">
                 <div class="mb-3">
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nombre del Responsable">
+                    <input type="text" class="form-control" name="nombre_del_responsable" id="exampleFormControlInput1" placeholder="Nombre del Responsable">
                     <div class="alert alert-danger p-1" id="nombre_del_responsable" role="alert" style="display: none;">Campo requerido.</div>
                 </div>
                 <div class="mb-3 mt-3">
@@ -100,14 +100,14 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $(document).on('submit', 'form#form_acta', () => {
-                let nombre_del_responsale = validator.getValueInput("nombre_del_responsable"),
+                let nombre_del_responsable = validator.getValueInput("nombre_del_responsable"),
                     carnet_de_identidad = validator.getValueInput("carnet_de_identidad"),
                     No_inventario_de_MB = validator.getValueInput("No_inventario_de_MB"),
                     fecha = validator.getValueInput("fecha"),
                     error = false;
 
                 // Validate Nombre del solicitante
-                error = validator.validate(validator.isNull(nombre_del_responsale) || validator.isEmpty(nombre_del_responsale), "div#nombre_del_responsable");
+                error = validator.validate(validator.isNull(nombre_del_responsable) || validator.isEmpty(nombre_del_responsable), "div#nombre_del_responsable");
 
                 // Validate cargo del solicitante
                 error = validator.validate(validator.isNull(carnet_de_identidad) || validator.isEmpty(carnet_de_identidad), "div#carnet_de_identidad");
