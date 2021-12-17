@@ -61,24 +61,20 @@ function validate_user_login() {
 function validate_username() {
     // Extract username
     var username = $('form input[name="username"]').val();
-    
-    // Validate username (empty)
-    if (isNullOrEmpty(username)) return false;
 
-    return true;
+    // Validate username (empty)
+    return !isNullOrEmpty(username);
 }
 
 function validate_password() {
     // Extract password
     var password = $('form input[name="password"]').val();
-    
+
     // Validate password (empty)
     if (isNullOrEmpty(password)) return false;
 
     // Validate password (min 4)
-    if (password.length < 4) return false;
-
-    return true;
+    return password.length >= 4;
 }
 
 // Esconder mensaje de error por defecto
@@ -96,7 +92,6 @@ $(document).ready(function () {
         // Validate Username
         if(!validate_username()) {
             $("div#username-error").show();
-            error = true;
         } else {
             $("div#username-error").hide();
         }
@@ -106,7 +101,6 @@ $(document).ready(function () {
         // Validate password
         if(!validate_password()) {
             $("div#password-error").show();
-            error = true;
         } else {
             $("div#password-error").hide();
         }
