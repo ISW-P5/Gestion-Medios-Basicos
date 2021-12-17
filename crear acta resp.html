@@ -20,114 +20,155 @@
 </head>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <img class="avatar" src="img/avatar3.png">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="principal_page_vicedecano.html" style="font-size: 18px;">Home</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 18px;">
-            Expediente de Medios Básicos
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
-            <a class="dropdown-item" href="crear expediente de mb.html" style="font-size: 18px;">Crear Expediente de Medios Básicos</a></li>
-            <a class="dropdown-item" href="#" style="font-size: 18px;">Modificar Expediente de Medios Básicos</a></li>
-            <a class="dropdown-item" href="#" style="font-size: 18px;">Eliminar Expediente de Medios Básicos</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="crear acta resp.html" style="font-size: 18px;">Crear Acta de Responsabilidad</a>
-        </li>
-      </ul>
-      <li class="nav-item dropdown d-flex">
-        <a class="nav-link color" href="#" id="dropdownnUser" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 18px;">
-          VICEDECANO DE ADMINISTRACION
-          <img src="img/avatar-generico.png" alt="" class="avatar-generico" >
-        </a>        
-        <ul class="dropdown-menu" aria-labelledby="dropdownnUser" style="font-size: 18px;">
-          <li><a class="dropdown-item" href="index.html"><i class="fas fa-sign-in-alt"></i> Cerrar Sesión</a></li>
-        </ul>        
-      </li>
+    <div class="container-fluid">
+        <img class="avatar" src="img/avatar3.png">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="principal_page_vicedecano.html"
+                       style="font-size: 18px;">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 18px;">
+                        Expediente de Medios Básicos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
+                        <a class="dropdown-item" href="crear expediente de mb.html" style="font-size: 18px;">Crear
+                            Expediente de Medios Básicos</a></li>
+                        <a class="dropdown-item" href="#" style="font-size: 18px;">Modificar Expediente de Medios
+                            Básicos</a></li>
+                        <a class="dropdown-item" href="#" style="font-size: 18px;">Eliminar Expediente de Medios
+                            Básicos</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="crear acta resp.html" style="font-size: 18px;">Crear
+                        Acta de Responsabilidad</a>
+                </li>
+            </ul>
+
+            <div class="nav-item dropdown search-dropdown">
+                <a id="search-down" data-bs-toggle="dropdown" aria-expanded="false" role="button"
+                   class="nav-item nav-link dropdown-toggle text-secondary" href="#"><i class="fa fa-search"></i></a>
+                <div class="dropdown-menu m-0 p-0" style="width: 250px" aria-labelledby="search-down">
+                    <div>
+                        <form>
+                            <div class="input-group search-box">
+                                <input type="text" id="search" class="form-control" placeholder="Buscar ...">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-secondary"><i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item dropdown d-flex">
+                <a class="nav-link color" href="#" id="dropdownnUser" role="button" data-bs-toggle="dropdown"
+                   aria-expanded="false" style="font-size: 18px;">
+                    VICEDECANO DE ADMINISTRACION
+                    <img src="img/avatar-generico.png" alt="" class="avatar-generico">
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownnUser" style="font-size: 18px;">
+                    <li><a class="dropdown-item" href="index.html"><i class="fas fa-sign-in-alt"></i> Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
 </nav>
 
 <body>
-    <div class="container">
-        <div class="col-md-6 bg-light mt-3 rounded" style="opacity: .95;">
-            <form class="form-group ms-3 me-3 pt-3" id="form_acta">
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="nombre_del_responsable" id="exampleFormControlInput1" placeholder="Nombre del Responsable">
-                    <div class="alert alert-danger p-1" id="nombre_del_responsable" role="alert" style="display: none;">Campo requerido y solo se aceptan letras.</div>
+<div class="container">
+    <div class="col-md-6 bg-light mt-3 rounded" style="opacity: .95;">
+        <form class="form-group ms-3 me-3 pt-3" id="form_acta">
+            <div class="mb-3">
+                <input type="text" class="form-control" name="nombre_del_responsable" id="exampleFormControlInput1"
+                       placeholder="Nombre del Responsable">
+                <div class="alert alert-danger p-1" id="nombre_del_responsable" role="alert" style="display: none;">
+                    Campo requerido y solo se aceptan letras.
                 </div>
-                <div class="mb-3 mt-3">
-                    <input type="text" class="form-control"name="carnet_de_identidad" id="exampleFormControlInput2" placeholder="Carnet de Identidad">
-                    <div class="alert alert-danger p-1" id="carnet_de_identidad" role="alert" style="display: none;">Campo requerido y el carnet de identidad debe ser valido.</div>
+            </div>
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" name="carnet_de_identidad" id="exampleFormControlInput2"
+                       placeholder="Carnet de Identidad">
+                <div class="alert alert-danger p-1" id="carnet_de_identidad" role="alert" style="display: none;">Campo
+                    requerido y el carnet de identidad debe ser valido.
                 </div>
-                <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" name="no_inventario_de_mb" id="exampleFormControlInput3" placeholder="No. Inventario del Medio Básico">
-                    <div class="alert alert-danger p-1" id="no_inventario_de_mb" role="alert" style="display: none;">Campo requerido y solo acepta combinaciones de letras y numeros.</div>
+            </div>
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" name="no_inventario_de_mb" id="exampleFormControlInput3"
+                       placeholder="No. Inventario del Medio Básico">
+                <div class="alert alert-danger p-1" id="no_inventario_de_mb" role="alert" style="display: none;">Campo
+                    requerido y debe empezar con 2 letras y 7 numeros.
                 </div>
-                <div class="input-group date mt-3" data-provide="datepicker">
-                    <input type="text" name="fecha" class="form-control datepicker" placeholder="Seleccione la Fecha">
+            </div>
+            <div class="input-group date mt-3" data-provide="datepicker">
+                <input type="text" name="fecha" class="form-control datepicker" placeholder="Seleccione la Fecha">
 
-                    <div class="input-group-addon">
-                    </div>
+                <div class="input-group-addon">
                 </div>
-                <div class="alert alert-danger p-1" id="fecha" role="alert" style="display: none;">Campo requerido y debe de ser en formato MM/DD/YYYY.</div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
-                    <button class="btn btn-secondary me-md-2 mb-3" type="submit">Exportar</button>
-                    <button class="btn btn-secondary mb-3" type="reset">Cancelar</button>
-                </div>
-              </form>
-        </div>
+            </div>
+            <div class="alert alert-danger p-1" id="fecha" role="alert" style="display: none;">Campo requerido y debe de
+                ser en formato MM/DD/YYYY.
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                <button class="btn btn-secondary me-md-2 mb-3" type="submit">Exportar</button>
+                <button class="btn btn-secondary mb-3" type="reset">Cancelar</button>
+            </div>
+        </form>
     </div>
-    
-    <!--JS Customer-->
-    <script src="lib/jquery 3.6/jquery-3.6.0.min.js"></script>
-    <script src="lib/bootstrap 5.1/js/bootstrap.min.js"></script>
-    <script src="lib/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="lib/fontawesome 5.13.0/js/all.min.js"></script>
-    <script src="scripts/datepicker-options.js"></script>
-    <script type="text/javascript" src="scripts/validator.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(document).on('submit', 'form#form_acta', () => {
-                let nombre_del_responsable = validator.getValueInput("nombre_del_responsable"),
-                    carnet_de_identidad = validator.getValueInput("carnet_de_identidad"),
-                    No_inventario_de_MB = validator.getValueInput("no_inventario_de_mb"),
-                    fecha = validator.getValueInput("fecha");
+</div>
 
-                // Validate all fields
-                return ![
-                    // Validate Nombre del solicitante
-                    validator.validate(validator.isNull(nombre_del_responsable) ||
-                                       validator.isEmpty(nombre_del_responsable) ||
-                                       !validator.onlyLetters(nombre_del_responsable), "div#nombre_del_responsable"),
+<!--JS Customer-->
+<script src="lib/jquery 3.6/jquery-3.6.0.min.js"></script>
+<script src="lib/bootstrap 5.1/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="lib/fontawesome 5.13.0/js/all.min.js"></script>
+<script src="scripts/datepicker-options.js"></script>
+<script type="text/javascript" src="scripts/validator.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('form#form_acta').on('reset', (e) => validator.hide_reset([
+            "div#nombre_del_responsable", "div#carnet_de_identidad", "div#no_inventario_de_mb", "div#fecha"
+        ]));
+        $(document).on('submit', 'form#form_acta', () => {
+            let nombre_del_responsable = validator.getValueInput("nombre_del_responsable"),
+                carnet_de_identidad = validator.getValueInput("carnet_de_identidad"),
+                No_inventario_de_MB = validator.getValueInput("no_inventario_de_mb"),
+                fecha = validator.getValueInput("fecha");
 
-                    // Validate carnet de identidad
-                    validator.validate(validator.isNull(carnet_de_identidad) ||
-                                       validator.isEmpty(carnet_de_identidad) ||
-                                       !validator.equalLength(11, carnet_de_identidad) ||
-                                       !validator.onlyNumbers(carnet_de_identidad), "div#carnet_de_identidad"),
+            // Validate all fields
+            return ![
+                // Validate Nombre del solicitante
+                validator.validate(validator.isNull(nombre_del_responsable) ||
+                    validator.isEmpty(nombre_del_responsable) ||
+                    !validator.onlyLetters(nombre_del_responsable), "div#nombre_del_responsable"),
 
-                    // Validate no inventario
-                    validator.validate(validator.isNull(No_inventario_de_MB) ||
-                                       validator.isEmpty(No_inventario_de_MB) ||
-                                       !validator.onlyLettersAndNumbers(No_inventario_de_MB),
-                                        "div#no_inventario_de_mb"),
+                // Validate carnet de identidad
+                validator.validate(validator.isNull(carnet_de_identidad) ||
+                    validator.isEmpty(carnet_de_identidad) ||
+                    !validator.equalLength(11, carnet_de_identidad) ||
+                    !validator.onlyNumbers(carnet_de_identidad), "div#carnet_de_identidad"),
 
-                    // Validate fecha
-                    validator.validate(validator.isNull(fecha) || validator.isEmpty(fecha) ||
-                                       !validator.isDate(fecha), "div#fecha"),
-                ].some((v) => v);
-            });
+                // Validate no inventario
+                validator.validate(validator.isNull(No_inventario_de_MB) ||
+                    validator.isEmpty(No_inventario_de_MB) ||
+                    !n_inv(No_inventario_de_MB),
+                    "div#no_inventario_de_mb"),
+
+                // Validate fecha
+                validator.validate(validator.isNull(fecha) || validator.isEmpty(fecha) ||
+                    !validator.isDate(fecha), "div#fecha"),
+            ].some((v) => v);
         });
-    </script>
+    });
+</script>
 </body>
 </html>

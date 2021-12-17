@@ -22,6 +22,11 @@ const validator = {
     getChecked: (input_name) => $('input[name="' + input_name + '"]').checked,
 
     // Utils
+    hide_reset: (array) => {
+        for(let i = 0; i < array.length; i++) {
+            $(array[i]).hide()
+        }
+    },
     validate: (expresion, element) => {
         if (expresion) {
             $(element).show();
@@ -31,3 +36,7 @@ const validator = {
         return false;
     }
 };
+
+function n_inv(value) {
+    return validator.regex(/\b[A-Za-z]{2}[0-9]{7}\b/, value);
+}

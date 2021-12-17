@@ -17,109 +17,148 @@
 </head>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <img class="avatar" src="img/avatar3.png">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="principal_page_vicedecano.html" style="font-size: 18px;">Home</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 18px;">
-            Expediente de Medios Básicos
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
-            <a class="dropdown-item" href="crear expediente de mb.html" style="font-size: 18px;">Crear Expediente de Medios Básicos</a></li>
-            <a class="dropdown-item" href="#" style="font-size: 18px;">Modificar Expediente de Medios Básicos</a></li>
-            <a class="dropdown-item" href="#" style="font-size: 18px;">Eliminar Expediente de Medios Básicos</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="crear acta resp.html" style="font-size: 18px;">Crear Acta de Responsabilidad</a>
-        </li>
-      </ul>
-      <li class="nav-item dropdown d-flex">
-        <a class="nav-link color" href="#" id="dropdownnUser" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 18px;">
-          VICEDECANO DE ADMINISTRACION
-          <img src="img/avatar-generico.png" alt="" class="avatar-generico" >
-        </a>        
-        <ul class="dropdown-menu" aria-labelledby="dropdownnUser" style="font-size: 18px;">
-          <li><a class="dropdown-item" href="index.html"><i class="fas fa-sign-in-alt"></i> Cerrar Sesión</a></li>
-        </ul>        
-      </li>
+    <div class="container-fluid">
+        <img class="avatar" src="img/avatar3.png">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="principal_page_vicedecano.html"
+                       style="font-size: 18px;">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 18px;">
+                        Expediente de Medios Básicos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
+                        <a class="dropdown-item" href="crear expediente de mb.html" style="font-size: 18px;">Crear
+                            Expediente de Medios Básicos</a></li>
+                        <a class="dropdown-item" href="#" style="font-size: 18px;">Modificar Expediente de Medios
+                            Básicos</a></li>
+                        <a class="dropdown-item" href="#" style="font-size: 18px;">Eliminar Expediente de Medios
+                            Básicos</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="crear acta resp.html" style="font-size: 18px;">Crear
+                        Acta de Responsabilidad</a>
+                </li>
+            </ul>
+
+            <div class="nav-item dropdown search-dropdown">
+                <a id="search-down" data-bs-toggle="dropdown" aria-expanded="false" role="button"
+                   class="nav-item nav-link dropdown-toggle text-secondary" href="#"><i class="fa fa-search"></i></a>
+                <div class="dropdown-menu m-0 p-0" style="width: 250px" aria-labelledby="search-down">
+                    <div>
+                        <form>
+                            <div class="input-group search-box">
+                                <input type="text" id="search" class="form-control" placeholder="Buscar ...">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-secondary"><i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item dropdown d-flex">
+                <a class="nav-link color" href="#" id="dropdownnUser" role="button" data-bs-toggle="dropdown"
+                   aria-expanded="false" style="font-size: 18px;">
+                    VICEDECANO DE ADMINISTRACION
+                    <img src="img/avatar-generico.png" alt="" class="avatar-generico">
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownnUser" style="font-size: 18px;">
+                    <li><a class="dropdown-item" href="index.html"><i class="fas fa-sign-in-alt"></i> Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
 </nav>
 
 <body>
-    <div class="container">
-        <div class="col-md-6 bg-light mt-3 rounded" style="opacity: .95;">
-            <form class="form-group ms-3 me-3 pt-3" id="form_expediente">
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="Nombre_del_Medio_Básico" id="exampleFormControlInput1" placeholder="Nombre_del_Medio_Básico">
-                    <div class="alert alert-danger p-1" id="Nombre_del_Medio_Básico" role="alert" style="display: none;">Campo requerido y solo acepta caracteres.</div>
+<div class="container">
+    <div class="col-md-6 bg-light mt-3 rounded" style="opacity: .95;">
+        <form class="form-group ms-3 me-3 pt-3" id="form_expediente">
+            <div class="mb-3">
+                <input type="text" class="form-control" name="Nombre_del_Medio_Básico" id="exampleFormControlInput1"
+                       placeholder="Nombre_del_Medio_Básico">
+                <div class="alert alert-danger p-1" id="Nombre_del_Medio_Básico" role="alert" style="display: none;">
+                    Campo requerido y solo acepta caracteres.
                 </div>
-                <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" name="No_Inventario" id="exampleFormControlInput2" placeholder="No_Inventario">
-                    <div class="alert alert-danger p-1" id="No_Inventario" role="alert" style="display: none;">Campo requerido y solo acepta combinaciones de letras y numeros.</div>
+            </div>
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" name="No_Inventario" id="exampleFormControlInput2"
+                       placeholder="No_Inventario">
+                <div class="alert alert-danger p-1" id="No_Inventario" role="alert" style="display: none;">Campo
+                    requerido y debe empezar con 2 letras y 7 numeros
                 </div>
-                <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" name="Nombre_del_Responsable" id="exampleFormControlInput3" placeholder="Nombre_del_Responsable">
-                    <div class="alert alert-danger p-1" id="Nombre_del_Responsable" role="alert" style="display: none;">Campo requerido y solo acepta caracteres.</div>
+            </div>
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" name="Nombre_del_Responsable" id="exampleFormControlInput3"
+                       placeholder="Nombre_del_Responsable">
+                <div class="alert alert-danger p-1" id="Nombre_del_Responsable" role="alert" style="display: none;">
+                    Campo requerido y solo acepta caracteres.
                 </div>
-                <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" name="Ubicación_del_Medio_Básico" id="exampleFormControlInput4" placeholder="Ubicación_del_Medio_Básico">
-                    <div class="alert alert-danger p-1" id="Ubicación_del_Medio_Básico" role="alert" style="display: none;">Campo requerido y solo acepta caracteres.</div>
+            </div>
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" name="Ubicación_del_Medio_Básico" id="exampleFormControlInput4"
+                       placeholder="Ubicación_del_Medio_Básico">
+                <div class="alert alert-danger p-1" id="Ubicación_del_Medio_Básico" role="alert" style="display: none;">
+                    Campo requerido y solo acepta caracteres.
                 </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button class="btn btn-secondary me-md-2 mb-3" type="submit">Crear Expediente</button>
-                    <button class="btn btn-secondary mb-3" type="reset">Cancelar</button>
-                </div>
-              </form>
-        </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button class="btn btn-secondary me-md-2 mb-3" type="submit">Crear Expediente</button>
+                <button class="btn btn-secondary mb-3" type="reset">Cancelar</button>
+            </div>
+        </form>
     </div>
-    <!--JS Customer-->
-    <script src="lib/jquery 3.6/jquery-3.6.0.min.js"></script>
-    <script src="lib/bootstrap 5.1/js/bootstrap.min.js"></script>
-    <script src="lib/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="lib/fontawesome 5.13.0/js/all.min.js"></script>
-    <script src="scripts/datepicker-options.js"></script>
-    <script type="text/javascript" src="scripts/validator.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(document).on('submit', 'form#form_expediente', () => {
-                let nombre_del_MB = validator.getValueInput("Nombre_del_Medio_Básico"),
-                    no_inventario = validator.getValueInput("No_Inventario"),
-                    Nombre_del_resp = validator.getValueInput("Nombre_del_Responsable"),
-                    Uicacion_del_MB = validator.getValueInput("Ubicación_del_Medio_Básico");
+</div>
+<!--JS Customer-->
+<script src="lib/jquery 3.6/jquery-3.6.0.min.js"></script>
+<script src="lib/bootstrap 5.1/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="lib/fontawesome 5.13.0/js/all.min.js"></script>
+<script src="scripts/datepicker-options.js"></script>
+<script type="text/javascript" src="scripts/validator.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('form#form_expediente').on('reset', (e) => validator.hide_reset([
+            "div#Nombre_del_Medio_Básico", "div#No_Inventario",
+            "div#Nombre_del_Responsable", "div#Ubicación_del_Medio_Básico"
+        ]));
+        $(document).on('submit', 'form#form_expediente', () => {
+            let nombre_del_MB = validator.getValueInput("Nombre_del_Medio_Básico"),
+                no_inventario = validator.getValueInput("No_Inventario"),
+                Nombre_del_resp = validator.getValueInput("Nombre_del_Responsable"),
+                Uicacion_del_MB = validator.getValueInput("Ubicación_del_Medio_Básico");
 
-                // Validate all fields
-                return ![
-                    // Validate Nombre del solicitante
-                    validator.validate(validator.isNull(nombre_del_MB) || validator.isEmpty(nombre_del_MB) ||
-                                       !validator.onlyLetters(nombre_del_MB), "div#Nombre_del_Medio_Básico"),
+            // Validate all fields
+            return ![
+                // Validate Nombre del solicitante
+                validator.validate(validator.isNull(nombre_del_MB) || validator.isEmpty(nombre_del_MB) ||
+                    !validator.onlyLetters(nombre_del_MB), "div#Nombre_del_Medio_Básico"),
 
-                    // Validate no inventario
-                    validator.validate(validator.isNull(no_inventario) || validator.isEmpty(no_inventario) ||
-                                       !validator.onlyLettersAndNumbers(no_inventario), "div#No_Inventario"),
+                // Validate no inventario
+                validator.validate(validator.isNull(no_inventario) || validator.isEmpty(no_inventario) ||
+                    !n_inv(no_inventario), "div#No_Inventario"),
 
-                    // Validate cargo del solicitante
-                    validator.validate(validator.isNull(Nombre_del_resp) || validator.isEmpty(Nombre_del_resp) ||
-                                       !validator.onlyLetters(Nombre_del_resp), "div#Nombre_del_Responsable"),
+                // Validate cargo del solicitante
+                validator.validate(validator.isNull(Nombre_del_resp) || validator.isEmpty(Nombre_del_resp) ||
+                    !validator.onlyLetters(Nombre_del_resp), "div#Nombre_del_Responsable"),
 
-                    // Validate ubicacion
-                    validator.validate(validator.isNull(Uicacion_del_MB) || validator.isEmpty(Uicacion_del_MB) ||
-                                       !validator.onlyLetters(Uicacion_del_MB), "div#Ubicación_del_Medio_Básico"),
-                ].some((v) => v);
-            });
+                // Validate ubicacion
+                validator.validate(validator.isNull(Uicacion_del_MB) || validator.isEmpty(Uicacion_del_MB) ||
+                    !validator.onlyLetters(Uicacion_del_MB), "div#Ubicación_del_Medio_Básico"),
+            ].some((v) => v);
         });
-    </script>
+    });
+</script>
 </body>
-
-<!--<footer class="bg-light">
-  <h6>Universidad de las Ciencias Informáticas ©2021</h6>
-</footer>-->
 </html>

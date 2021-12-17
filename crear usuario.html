@@ -44,7 +44,25 @@
                     </ul>
                 </li>
             </ul>
-            <li class="nav-item dropdown d-flex">
+
+            <div class="nav-item dropdown search-dropdown">
+                <a id="search-down" data-bs-toggle="dropdown" aria-expanded="false" role="button"
+                   class="nav-item nav-link dropdown-toggle text-secondary" href="#"><i class="fa fa-search"></i></a>
+                <div class="dropdown-menu m-0 p-0" style="width: 250px" aria-labelledby="search-down">
+                    <div>
+                        <form>
+                            <div class="input-group search-box">
+                                <input type="text" id="search" class="form-control" placeholder="Buscar ...">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-secondary"><i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item dropdown d-flex">
                 <a class="nav-link color" href="#" id="dropdownnUser" role="button" data-bs-toggle="dropdown"
                    aria-expanded="false" style="font-size: 18px;">
                     ADMINISTRADOR DEL SISTEMA
@@ -54,7 +72,7 @@
                     <li><a class="dropdown-item" href="index.html"><i class="fas fa-sign-in-alt"></i> Cerrar Sesión</a>
                     </li>
                 </ul>
-            </li>
+            </div>
         </div>
     </div>
 </nav>
@@ -65,13 +83,18 @@
         <form class="form-group ms-3 me-3" id="form-user">
             <div class="row">
                 <div class="col mt-3">
-                    <input type="text" class="form-control" placeholder="Nombre" name="first_name" aria-label="First name">
-                    <div class="alert alert-danger p-1" id="first_name-error" role="alert" style="display: none;">Campo requerido y solo es permitido letras.</div>
+                    <input type="text" class="form-control" placeholder="Nombre" name="first_name"
+                           aria-label="First name">
+                    <div class="alert alert-danger p-1" id="first_name-error" role="alert" style="display: none;">Campo
+                        requerido y solo es permitido letras.
+                    </div>
                 </div>
                 <div class="col mt-3">
                     <input type="text" class="form-control" placeholder="Apellidos" name="last_name"
                            aria-label="Last name">
-                    <div class="alert alert-danger p-1" id="last_name-error" role="alert" style="display: none;">Campo requerido y solo es permitido letras.</div>
+                    <div class="alert alert-danger p-1" id="last_name-error" role="alert" style="display: none;">Campo
+                        requerido y solo es permitido letras.
+                    </div>
                 </div>
             </div>
             <div class="input-group flex-nowrap mt-3">
@@ -79,11 +102,15 @@
                 <input type="text" class="form-control" placeholder="Usuario" name="username" aria-label="Username"
                        aria-describedby="addon-wrapping">
             </div>
-            <div class="alert alert-danger p-1" id="username-error" role="alert" style="display: none;">Campo requerido, acepta letras y numeros pero no solo numeros.</div>
+            <div class="alert alert-danger p-1" id="username-error" role="alert" style="display: none;">Campo requerido,
+                acepta letras y numeros pero no solo numeros.
+            </div>
             <div class="mb-3 mt-3">
                 <input type="password" class="form-control" id="exampleInputPassword1" name="password"
                        placeholder="Contraseña">
-                <div class="alert alert-danger p-1" id="password-error" role="alert" style="display: none;">Campo requerido y mínimo 4 caracteres.</div>
+                <div class="alert alert-danger p-1" id="password-error" role="alert" style="display: none;">Campo
+                    requerido y mínimo 4 caracteres.
+                </div>
             </div>
             <select class="form-select mt-3" aria-label="Default select example" name="rol">
                 <option selected disabled>Seleccione el rol del usuario en el sistema</option>
@@ -91,7 +118,8 @@
                 <option value="2">Vicedecano de Administración</option>
                 <option value="3">Jefe de Departamento</option>
             </select>
-            <div class="alert alert-danger p-1" id="rol-error" role="alert" style="display: none;">Campo requerido.</div>
+            <div class="alert alert-danger p-1" id="rol-error" role="alert" style="display: none;">Campo requerido.
+            </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button class="btn btn-secondary me-md-2 mb-3 mt-3" type="submit">Crear Usuario</button>
                 <button class="btn btn-secondary mb-3 mt-3" type="reset">Cancelar</button>
@@ -107,6 +135,10 @@
 <script type="text/javascript" src="scripts/validator.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        $('form#form-user').on('reset', (e) => validator.hide_reset([
+            "div#first_name-error", "div#last_name-error", "div#username-error",
+            "div#password-error", "div#rol-error"
+        ]));
         $(document).on('submit', 'form#form-user', () => {
             let nombre = validator.getValueInput("first_name"),
                 apellido = validator.getValueInput("last_name"),
@@ -118,20 +150,20 @@
             return ![
                 // Validate Nombre
                 validator.validate(validator.isNull(nombre) || validator.isEmpty(nombre) ||
-                                   !validator.onlyLetters(nombre), "div#first_name-error"),
+                    !validator.onlyLetters(nombre), "div#first_name-error"),
 
                 // Validate Apellido
                 validator.validate(validator.isNull(apellido) || validator.isEmpty(apellido) ||
-                                   !validator.onlyLetters(apellido), "div#last_name-error"),
+                    !validator.onlyLetters(apellido), "div#last_name-error"),
 
                 // Validate Usuario
                 validator.validate(validator.isNull(username) || validator.isEmpty(username) ||
-                                   validator.onlyNumbers(username) ||
-                                   !validator.onlyLettersAndNumbers(username), "div#username-error"),
+                    validator.onlyNumbers(username) ||
+                    !validator.onlyLettersAndNumbers(username), "div#username-error"),
 
                 // Validate Contrasena
                 validator.validate(validator.isNull(password) || validator.isEmpty(password) ||
-                                   validator.minLength(4, password), "div#password-error"),
+                    validator.minLength(4, password), "div#password-error"),
 
                 // Validate Rol
                 validator.validate(validator.isNull(rol) || validator.isEmpty(rol), "div#rol-error"),
