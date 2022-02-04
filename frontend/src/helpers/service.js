@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
+axios.defaults.xsrfCookieName = "csrftoken";
+
 // TODO: Create and Migrate all API Methods to Async/Await
 const service = {
     // Attempts

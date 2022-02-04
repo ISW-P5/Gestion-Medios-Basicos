@@ -27,9 +27,10 @@ class LDAPBackend(ModelBackend):
                                 except User.DoesNotExist:
                                     # Create new User when not found
                                     user = User.objects.create_user(username, results['mail'].values[0], password,
-                                                                    first_name=results['givenname'].values[0],
+                                                                    first_name=results['givenName'].values[0],
                                                                     last_name=results['sn'].values[0])
-                                    # user.is_staff = True  # Add when you want join to the platform without permission
+                                    # Add when you want join to the platform without permission
+                                    user.is_staff = results['title'].values[0] != 'Estudiante'
                                     user.save()
                                 finally:
                                     return user

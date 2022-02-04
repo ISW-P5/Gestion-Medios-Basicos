@@ -42,6 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Django Rest Framework
+    'rest_framework',
+
+    # Django Cross-Origin Resource Sharing (CORS)
+    'corsheaders',
+
     # System App
     'system.apps.SystemConfig'
 ]
@@ -49,7 +55,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -81,6 +88,7 @@ WSGI_APPLICATION = 'kernel.wsgi.application'
 
 CACHE_TTL = 60 * 15
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -116,6 +124,22 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_REDIRECT_URL = '/admin'
+LOGOUT_REDIRECT_URL = '/'
+
+
+# Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.DjangoModelPermissions'
+    ),
+    'PAGE_SIZE': 10
+}
 
 
 # Internationalization
@@ -134,7 +158,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = str(BASE_DIR / 'assets')
-STATICFILES_DIRS = (str(BASE_DIR / 'static'), )
+STATICFILES_DIRS = (
+    str(BASE_DIR / 'static'),
+)
 
 MEDIA_ROOT = str(BASE_DIR / 'media')
 MEDIA_URL = '/media/'

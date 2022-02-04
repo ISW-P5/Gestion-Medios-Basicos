@@ -8,7 +8,7 @@
         <template #toggler>
             <CHeaderNavLink>
                 <div class="c-avatar">
-                    <img :src="'/avatar?u=' + $store.state.user.username + '&width=64&height=64&font-size=36'"
+                    <img :src="'/api/avatar?u=' + $store.state.user.username + '&width=64&height=64&font-size=36'"
                          class="c-avatar-img"  alt="User Avatar"/>
                 </div>
             </CHeaderNavLink>
