@@ -18,7 +18,7 @@
             <strong>{{ $store.state.user.username }}</strong>
         </CDropdownHeader>
         <!-- #TODO: Add User Profile -->
-        <CDropdownItem href="#/user/id">
+        <CDropdownItem :href="'#/users/' + $store.state.user.id + '/detail/'">
             <CIcon name="cil-user"/>
             Perfil de Usuario
         </CDropdownItem>

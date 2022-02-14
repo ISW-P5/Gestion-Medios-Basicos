@@ -2,7 +2,7 @@ from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
 from rest_framework import routers
 
-from .views import index, admin, avatar, login_api
+from .views import index, admin, avatar, login_api, user_data_api, csrf_api
 from .api import (UserViewSet, BasicMediumExpedientViewSet, RequestTicketViewSet,
                   MovementTicketViewSet, ResponsibilityCertificateViewSet)
 
@@ -25,6 +25,8 @@ urlpatterns = [
     # API
     path('api/login/', login_api, name='api_login'),
     path('api/avatar/', avatar, name="avatar"),
+    path('api/csrf/', csrf_api, name="csrf_api"),
+    path('api/user/', user_data_api, name="user_data"),
     # TODO: Create print documents and acceptation Tickets
     path('api/', include(router.urls)),
 ]

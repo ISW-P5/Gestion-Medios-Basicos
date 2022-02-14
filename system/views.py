@@ -15,7 +15,7 @@ def admin(request):
     # Render Vue.js Admin Panel
     if request.user.is_anonymous:
         return redirect('login')
-    return render(request, "index.html")
+    return render(request, "index.html" if request.user.is_staff else "403.html")
 
 
 def login_api(request):
@@ -29,6 +29,19 @@ def login_api(request):
                 return JsonResponse({'status': True})
         return JsonResponse({'status': False})
     return redirect('/login/')
+
+
+def user_data_api(request):
+    return JsonResponse({
+        'id': request.user.id,
+        'username': request.user.username
+                        } if not request.user.is_anonymous else {
+        'detail': "Las credenciales de autenticación no se proveyeron."
+    })
+
+
+def csrf_api(request):
+    return JsonResponse({'detaild': "OK"})
 
 
 def avatar(request, **kwargs):

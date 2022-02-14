@@ -1,12 +1,41 @@
+from collections import OrderedDict
+
 from django.contrib.auth.models import User, Permission
+from django.core.paginator import Paginator
 from django.utils.timezone import now
 from rest_framework import serializers
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 from .models import MovementTicket, RequestTicket, BasicMediumExpedient, ResponsibilityCertificate
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class PageNumberSizePagination(PageNumberPagination):
+    page_size_query_param = 'per_page'
+
+    def get_paginated_response(self, data):
+        return Response(OrderedDict([
+            ('paginator', list(self.page.paginator.page_range)),
+            ('page', self.page.number),
+            ('per_page', self.page.paginator.per_page),
+            ('count', self.page.paginator.count),
+            ('items', data)
+        ]))
+
+
+class BasicUserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField(label='Rol', allow_null=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'role')
+
+    def get_role(self, obj):
+        group = obj.groups.first()
+        return group.name if group else None
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer, BasicUserSerializer):
     permissions = serializers.SerializerMethodField(label='Permisos', default={})
 
     class Meta:
@@ -42,15 +71,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         # Permissions: 0 - View, 1 - Add, 2 - Modify, 3 - Delete
         return 0 if action == 'view' else 1 if action == 'add' else 2 if action == 'change' else 3 if action == 'delete' else -1
 
-    def get_role(self, obj):
-        group = obj.groups.first()
-        return group.name if group else None
-
 
 class BasicMediumExpedientSerializer(serializers.HyperlinkedModelSerializer):
+    owner = BasicUserSerializer(source='responsible', read_only=True)
+
     class Meta:
         model = BasicMediumExpedient
-        fields = ('url', 'name', 'inventory_number', 'responsible', 'location')
+        fields = ('url', 'id', 'name', 'inventory_number', 'responsible', 'owner', 'location')
+        read_only_fields = ('id',)
+        extra_kwargs = {
+            'responsible': {'write_only': True},
+        }
 
 
 class RequestTicketSerializer(serializers.HyperlinkedModelSerializer):

@@ -1,15 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-"""
-    Rol:
-        - Vicedecano
-            - Asigna/Mueve/Extrae los MB
-        - Jefe de Depa
-            - Soicitud MB (Pedir)
-            - Pedir Movimineto del MB
-"""
-
 
 class BasicMediumExpedient(models.Model):
     """Expediente del Medio Basico"""
@@ -25,7 +16,7 @@ class BasicMediumExpedient(models.Model):
         verbose_name = 'Expediente del Medio Basico'
         verbose_name_plural = 'Expedientes de los Medios Basicos'
 
-    def __repr__(self):
+    def __str__(self):
         return self.inventory_number + ' - ' + self.name
 
 
@@ -43,7 +34,7 @@ class RequestTicket(models.Model):
         verbose_name = 'Vale de Solicitud'
         verbose_name_plural = 'Vales de Solicitud'
 
-    def __repr__(self):
+    def __str__(self):
         return self.requester.first_name + ' - ' + self.basic_medium.name
 
 
@@ -61,7 +52,7 @@ class MovementTicket(models.Model):
         verbose_name = 'Vale de Movimiento'
         verbose_name_plural = 'Vales de Movimiento'
 
-    def __repr__(self):
+    def __str__(self):
         return self.requester.first_name + ' - ' + self.basic_medium.name
 
 
@@ -76,5 +67,5 @@ class ResponsibilityCertificate(models.Model):
         verbose_name = 'Acta de Responsabilidad'
         verbose_name_plural = 'Actas de Responsabilidad'
 
-    def __repr__(self):
+    def __str__(self):
         return self.responsible.first_name + ' - ' + self.basic_medium.name

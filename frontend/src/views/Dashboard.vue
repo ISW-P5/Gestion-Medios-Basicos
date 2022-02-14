@@ -10,23 +10,11 @@
 </template>
 
 <script>
+import loading from "../mixins/loading";
 
 export default {
     name: "Dashboard",
     title: 'Admin | Dashboard',
-    components: {},
-    data() {
-        return {
-            system_information: [],
-            drives: [],
-        }
-    },
-    methods: {
-
-    },
+    mixins: [loading]
 };
 </script>
-
-<style scoped>
-
-</style>

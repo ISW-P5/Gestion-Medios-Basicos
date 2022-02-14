@@ -4,35 +4,23 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 // TODO: Create and Migrate all API Methods to Async/Await
-const service = {
+const Service = {
     // Attempts
     attempts: 0,
     csrf_attempts: 0,
-    // Timer for try again
-    timer: 0,
-    time_wait: 5000,
-    stopped: false,
-    // Logging
+    time_wait: 3000,
     logging: false,
-    logging_promise: 0,
-    // Control & Internals
-    resetRequest() {
-        this.destroyRequest();
-        this.stopped = false;
-    },
-    destroyRequest() {
-        if (this.timer && !this.stopped) {
-            this.stopped = true;
-            clearTimeout(this.timer);
-            this.timer = 0;
-        }
-    },
+
+    // Utils
+    _responseIsObject: (r) => typeof r.data === 'object',
+    _responseIsString: (r) => typeof r.data === 'string',
     redirectToLogin() {
         window.location.replace('http://' + window.location.host + '/login/');
     },
+
     _connectionError(vm) {
+        // Detect CSRF Errors
         if (this.csrf_attempts > 2) {   // Max 3 attempts
-            this.resetRequest();
             if (vm.$route.name !== 'error.forbidden') {
                 vm.$router.push({name:'error.forbidden', params: {
                     error_type: '403',
@@ -42,8 +30,8 @@ const service = {
             }
             return true;
         }
+        // Detect Connection Errors
         if (this.attempts > 4) {        // Max 5 attempts
-            this.resetRequest();
             if (vm.$route.name !== 'error.connection') {
                 vm.$router.push({name:'error.connection'});
             }
@@ -62,10 +50,17 @@ const service = {
         // Reset attempts because if check login === can access to Web
         this._resetAttempts();
         this._resetCSRFAttempts();
-        return typeof response.data === 'string' && response.data.includes("auth_username") && response.data.includes("auth_password");
+
+        // Verify Required Login
+        if (this._responseIsString(response)) {
+            return response.data.includes("Autenticar");
+        } else if (this._responseIsObject(response)) {
+            return response.data.detail && response.data.detail.includes("credenciales");
+        }
+        return false;
     },
-    _requirePrivilege(vm, privilege = 0, power = 1) {
-        const bypass = vm.$store.getters.privilege_required(privilege, power);
+    _requirePrivilege(vm, privilege, power = 0) {
+        const bypass = vm.$store.state.user(privilege, power);
         if (!bypass) {
             if (vm.$route.name !== 'error.forbidden') {
                 vm.$router.push({name:'error.forbidden', params: {error_type: '403'}});
@@ -73,24 +68,19 @@ const service = {
         }
         return bypass;
     },
-    _waitForLogging(vm) {
-        if (this.logging) {
-            return (new Promise((resolve) => resolve(true)));
-        } else if (!this.logging_promise) {
-            this.logging_promise = (new Promise((resolve) => this.getCurrentUserPromise(vm, resolve)));
-        }
-        return this.logging_promise;
-    },
     _waitForCheckError(vm, e) {
         if (!this._connectionError(vm)) {
             if (e.response) {
+                if (process.env.NODE_ENV !== 'production') {
+                    console.log("RESPONSE", e.response);
+                }
                 switch (e.response.status) {
                     case 403:
                         if (e.response.data.error === 'CSRF token missing or incorrect.') {
                             return new Promise((resolve) => {
                                 if (this.logging) {
                                     this.csrf_attempts++; // Incremental csrf attempt
-                                    axios.get('/super/api/csrf')
+                                    axios.get('/api/csrf/')
                                     .then(_ => resolve(true))
                                     .catch(_ => {
                                         if (vm.$route.name !== 'error.forbidden') {
@@ -105,20 +95,17 @@ const service = {
                                 }
                             });
                         } else {
-                            this.resetRequest();
                             if (vm.$route.name !== 'error.forbidden') {
                                 vm.$router.push({name:'error.forbidden', params: {error_type: '403'}});
                             }
                             return new Promise((resolve) => resolve(false));
                         }
                     case 404:
-                        this.resetRequest();
                         if (vm.$route.name !== 'error.404') {
                             vm.$router.push({name:'error.404'});
                         }
                         return new Promise((resolve) => resolve(false));
                     case 500:
-                        this.resetRequest();
                         if (vm.$route.name !== 'error.fatal') {
                             vm.$router.push({name:'error.fatal'});
                         }
@@ -129,94 +116,26 @@ const service = {
         }
         return new Promise((resolve) => resolve(false));
     },
-    _responseIsObject: (r) => typeof r.data === 'object',
-    _responseIsString: (r) => typeof r.data === 'string',
-    // Utils
-    getPage: (paginator, page) => (paginator[paginator.length - 1] < page) ? paginator[paginator.length - 1] : page,
-    // All Services
-    getCurrentUserPromise(vm, resolve) {
-        this.resetRequest();
-        if (!this.logging) {
-            axios.get('/super/api/current_session')
-            .then(response => {
+    _create_request(vm, request, action, validation = true) {
+            request.then(response => {
                 if (!this._requireLogin(response)) {
-                    // Check not Stopped
-                    if (!this.stopped) {
-                        // Check error
-                        if (!this._responseIsObject(response)) {
-                            if (vm.$route.name !== 'error.fatal') {
-                                vm.$router.push({name:'error.fatal'});
-                            }
-                            this.logging_promise = 0;
-                            resolve(false);
-                        } else if (response.data.error) {
-                            if (vm.$route.name !== 'error.fatal') {
-                                vm.$router.push({name:'error.fatal'});
-                            }
-                            this.logging_promise = 0;
-                            resolve(false);
-                        } else {
-                            // Save in Global state user data
-                            if (vm.$route.name === 'error.fatal') {
-                                // Back to View before ErrorPage
-                                vm.$router.back();
-                            }
-                            this.logging = true;
-                            vm.$store.commit('setUserData', response.data);
-
-                            this.logging_promise = 0;
-                            resolve(true);
+                    // Check error
+                    if (validation && !this._responseIsObject(response)) {
+                        if (vm.$route.name !== 'error.fatal') {
+                            vm.$router.push({name:'error.fatal'});
+                        }
+                    } else if (validation && response.data.detail) {
+                        if (vm.$route.name !== 'error.fatal') {
+                            vm.$router.push({name:'error.fatal'});
                         }
                     } else {
-                        this.logging_promise = 0;
-                        resolve(false);
-                    }
-                } else {
-                    this.redirectToLogin();  // Redirect to Login Page
-                    this.logging_promise = 0;
-                    resolve(false);
-                }
-            })
-            .catch(a => {
-                if (vm.$route.name !== 'error.fatal') {
-                    vm.$router.push({name:'error.fatal'});
-                }
-                this.logging_promise = 0;
-                resolve(false);
-            });
-        } else {
-            this.logging_promise = 0;
-            resolve(true);
-        }
-    },
-    getCurrentUser(vm) {
-        this.resetRequest();
-        if (!this.logging) {
-            axios.get('/super/api/current_session')
-            .then(response => {
-                if (!this._requireLogin(response)) {
-                    // Check not Stopped
-                    if (!this.stopped) {
-                        // Check error
-                        if (!this._responseIsObject(response)) {
-                            if (vm.$route.name !== 'error.fatal') {
-                                vm.$router.push({name:'error.fatal'});
-                            }
-                            this.timer = setTimeout(() => this.getCurrentUser(vm), this.time_wait);
-                        } else if (response.data.error) {
-                            if (vm.$route.name !== 'error.fatal') {
-                                vm.$router.push({name:'error.fatal'});
-                            }
-                            this.timer = setTimeout(() => this.getCurrentUser(vm), this.time_wait);
-                        } else {
-                            // Save in Global state user data
-                            if (vm.$route.name === 'error.fatal') {
-                                // Back to View before ErrorPage
-                                vm.$router.back();
-                            }
-                            this.logging = true;
-                            vm.$store.commit('setUserData', response.data);
+                        // Save in Global state user data
+                        if (vm.$route.name === 'error.fatal') {
+                            // Back to View before ErrorPage
+                            vm.$router.back();
                         }
+
+                        action(this, response);
                     }
                 } else {
                     this.redirectToLogin();  // Redirect to Login Page
@@ -228,12 +147,69 @@ const service = {
                         if (vm.$route.name !== 'error.fatal') {
                             vm.$router.push({name:'error.fatal'});
                         }
-                        this.timer = setTimeout(() => this.getCurrentUser(vm), this.time_wait);
                     }
                 });
             });
-        }
+    },
+
+    // All Services
+    getCurrentUser(vm) {
+        this._create_request(vm, axios.get('/api/user/'), function (sender, response) {
+            sender.logging = true;
+            sender.getUserData(vm, response.data.id);
+        }, !this.logging);
+    },
+    getUserData(vm, id) {
+        this._create_request(vm, axios.get('/api/users/' + String(id) + '/'),
+            function (sender, response) {
+                response.data.id = id;
+                vm.$store.commit('setUserData', response.data);
+            });
+    },
+
+    getList_BasicMedium(vm) {
+        // TODO: Removed default loading because using TableSkeletonLoading
+        // vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/basic_medium/', {
+                params: {
+                    page: vm.page,
+                    per_page: vm.per_page,
+                    filter: vm.appliedFilter,
+                    ordering: vm.ordering,
+                }
+            }), function (sender, response) {
+                vm.data = response.data;
+                vm.loading = false;
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    remove_BasicMedium(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.delete('/api/basic_medium/' + String(id) + '/'),
+            function (sender, response) {
+                // Remove from list
+                vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                vm.finish_delete();
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            }, false);
+    },
+    add_BasicMedium(vm) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.post('/api/basic_medium/', {
+
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect to List Warnings
+                vm.$router.push({name: 'basic_medium'}).then(r => {});
+            });
     },
 };
 
-export default service;
+export default Service;

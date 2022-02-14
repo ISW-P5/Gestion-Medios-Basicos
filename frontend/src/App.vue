@@ -3,9 +3,11 @@
 </template>
 
 <script>
-    // TODO: Create Preview loading user account
 export default {
-    name: 'App'
+    name: 'App',
+    created() {
+        this.$services.getCurrentUser(this);
+    },
 }
 </script>
 

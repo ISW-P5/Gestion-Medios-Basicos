@@ -11,10 +11,13 @@
 </template>
 
 <script>
+import loading from "../../mixins/loading";
+
 export default {
     name: "HelpPage",
     title: 'Admin | Changelog',
     panel_title: 'Ayuda',
+    mixins: [loading],
 }
 </script>
 
