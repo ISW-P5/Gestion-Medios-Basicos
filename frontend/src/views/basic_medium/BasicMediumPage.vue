@@ -5,7 +5,7 @@
                 <CIcon name="cil-book"/>
                 Listado de Medios Basicos<span v-model="data.count" v-if="data"> ({{ data.count }})</span>
                 <div class="card-header-actions" v-if="privilege_required(privilege, privileges.ADD)">
-                    <CButton color="success" size="sm" :to="{ name: 'basic_medium.add'}" :disabled="!(data)">
+                    <CButton color="success" size="sm" :to="{ name: 'basic_medium.add' }" :disabled="!(data)">
                         <CIcon name="cil-plus" /> Agregar
                     </CButton>
                 </div>

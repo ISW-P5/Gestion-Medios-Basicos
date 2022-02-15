@@ -28,14 +28,14 @@ class BasicUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'role')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'role')
 
     def get_role(self, obj):
         group = obj.groups.first()
         return group.name if group else None
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer, BasicUserSerializer):
+class UserSerializer(BasicUserSerializer):
     permissions = serializers.SerializerMethodField(label='Permisos', default={})
 
     class Meta:
@@ -72,31 +72,31 @@ class UserSerializer(serializers.HyperlinkedModelSerializer, BasicUserSerializer
         return 0 if action == 'view' else 1 if action == 'add' else 2 if action == 'change' else 3 if action == 'delete' else -1
 
 
-class BasicMediumExpedientSerializer(serializers.HyperlinkedModelSerializer):
+class BasicMediumExpedientSerializer(serializers.ModelSerializer):
     owner = BasicUserSerializer(source='responsible', read_only=True)
 
     class Meta:
         model = BasicMediumExpedient
-        fields = ('url', 'id', 'name', 'inventory_number', 'responsible', 'owner', 'location')
+        fields = ('url', 'id', 'name', 'inventory_number', 'responsible', 'owner', 'location', 'is_enable')
         read_only_fields = ('id',)
         extra_kwargs = {
             'responsible': {'write_only': True},
         }
 
 
-class RequestTicketSerializer(serializers.HyperlinkedModelSerializer):
+class RequestTicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = RequestTicket
         fields = ('url', 'requester', 'basic_medium', 'departament', 'accepted')
 
 
-class MovementTicketSerializer(serializers.HyperlinkedModelSerializer):
+class MovementTicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = MovementTicket
         fields = ('url', 'requester', 'basic_medium', 'actual_location', 'new_location')
 
 
-class ResponsibilityCertificateSerializer(serializers.HyperlinkedModelSerializer):
+class ResponsibilityCertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResponsibilityCertificate
         fields = ('url', 'responsible', 'identity_card', 'basic_medium', 'datetime')

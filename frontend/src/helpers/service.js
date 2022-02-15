@@ -185,6 +185,22 @@ const Service = {
                 vm.$store.commit('removeLoading');
             });
     },
+    get_BasicMedium(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/basic_medium/ ' + String(id) + '/'),
+            function (sender, response) {
+                vm.name = response.data.name;
+                vm.inventory_number = response.data.inventory_number;
+                vm.location = response.data.location;
+                vm.responsible_id = response.data.owner.id;
+                let value = response.data.owner.first_name + ' ' + response.data.owner.last_name;
+                vm.responsible_name = (value.length === 0 || !value.trim()) ? response.data.owner.username : value;
+                vm.is_enable = response.data.is_enable;
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
     remove_BasicMedium(vm, id) {
         vm.$store.commit('setLoading');
         this._create_request(vm, axios.delete('/api/basic_medium/' + String(id) + '/'),
@@ -197,10 +213,23 @@ const Service = {
                 vm.$store.commit('removeLoading');
             }, false);
     },
+    metadata_BasicMedium(vm) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/basic_medium/metadata/'),
+            function (sender, response) {
+                vm.responsible = response.data.responsible;
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
     add_BasicMedium(vm) {
         vm.$store.commit('setLoading');
         this._create_request(vm, axios.post('/api/basic_medium/', {
-
+                inventory_number: vm.inventory_number,
+                name: vm.name,
+                responsible: vm.responsible_id,
+                location: vm.location,
+                is_enable: vm.is_enable,
             }),
             function (sender, response) {
                 // Remove loading
@@ -208,6 +237,23 @@ const Service = {
 
                 // Redirect to List Warnings
                 vm.$router.push({name: 'basic_medium'}).then(r => {});
+            });
+    },
+    edit_BasicMedium(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.put('/api/basic_medium/' + String(id) + '/', {
+                inventory_number: vm.inventory_number,
+                name: vm.name,
+                responsible: vm.responsible_id,
+                location: vm.location,
+                is_enable: vm.is_enable,
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect to List Warnings
+                vm.$router.push({name: 'basic_medium.detail', params: {id:id}}).then(r => {});
             });
     },
 };

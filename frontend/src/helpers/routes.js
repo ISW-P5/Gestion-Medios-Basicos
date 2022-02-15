@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import TheContainer from "../containers/TheContainer";
 import Dashboard from '../views/Dashboard';
 import ErrorPage from "../views/errors/ErrorPage";
-import TheContainer from "../containers/TheContainer";
 import HelpPage from "../views/extra/HelpPage";
 import BasicMediumPage from "../views/basic_medium/BasicMediumPage";
-import AddBasicMediumPage from "../views/basic_medium/AddBasicMediumPage";
+import DetailBasicMediumPage from "../views/basic_medium/DetailBasicMediumPage";
 
 Vue.use(VueRouter);
 
@@ -32,19 +32,19 @@ const routes = [
                         path: 'add/',
                         name: 'basic_medium.add',
                         meta: {label: 'Añadir Medio Basico'},
-                        component: AddBasicMediumPage
+                        component: DetailBasicMediumPage
                     },
                     {
                         path: ':id/detail/',
                         name: 'basic_medium.detail',
                         meta: {label: 'Ver Medio Basico'},
-                        component: HelpPage
+                        component: DetailBasicMediumPage
                     },
                     {
                         path: ':id/edit/',
                         name: 'basic_medium.edit',
                         meta: {label: 'Editar Medio Basico'},
-                        component: HelpPage
+                        component: DetailBasicMediumPage
                     },
                 ]
             },

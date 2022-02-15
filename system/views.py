@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.http import JsonResponse, HttpResponse
 
@@ -47,3 +49,17 @@ def csrf_api(request):
 def avatar(request, **kwargs):
     return HttpResponse(get_svg_avatar(request.GET.get('u', 'U'), **request.GET.dict()),
                         content_type='image/svg+xml;base64')
+
+
+@login_required
+def basic_medium_metadata(request):
+    return JsonResponse({
+        'responsible': [
+            {
+                'value': r.id,
+                'label': r.username
+                if r.first_name.strip() == '' or r.last_name.strip() == '' else (r.first_name + ' ' + r.last_name)
+            }
+            for r in User.objects.filter(is_staff=True)
+        ]
+    })

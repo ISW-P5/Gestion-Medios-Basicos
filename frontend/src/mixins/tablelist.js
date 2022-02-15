@@ -14,7 +14,7 @@ export default {
             // Data & Paginator & Ordering
             data: 0,
             page: 1,
-            per_page: 2,
+            per_page: 50,
             ordering: {
                 asc: true,
                 column: 'id',
