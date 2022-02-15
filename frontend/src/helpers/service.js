@@ -1,4 +1,5 @@
 import axios from 'axios';
+import validator from './validator';
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -250,7 +251,9 @@ const Service = {
         this._create_request(vm, axios.delete('/api/basic_medium/' + String(id) + '/'),
             function (sender, response) {
                 // Remove from list
-                vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                if (vm.data) {
+                    vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                }
                 vm.finish_delete();
 
                 // Remove loading
@@ -270,7 +273,7 @@ const Service = {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
-                // Redirect to List Warnings
+                // Redirect
                 vm.$router.push({name: 'basic_medium'}).then(r => {});
             });
     },
@@ -287,7 +290,7 @@ const Service = {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
-                // Redirect to List Warnings
+                // Redirect
                 vm.$router.push({name: 'basic_medium.detail', params: {id:id}}).then(r => {});
             });
     },
@@ -333,7 +336,9 @@ const Service = {
         this._create_request(vm, axios.delete('/api/responsibility_certificate/' + String(id) + '/'),
             function (sender, response) {
                 // Remove from list
-                vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                if (vm.data) {
+                    vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                }
                 vm.finish_delete();
 
                 // Remove loading
@@ -351,7 +356,7 @@ const Service = {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
-                // Redirect to List Warnings
+                // Redirect
                 vm.$router.push({name: 'responsibility_certificate'}).then(r => {});
             });
     },
@@ -366,7 +371,7 @@ const Service = {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
-                // Redirect to List Warnings
+                // Redirect
                 vm.$router.push({name: 'responsibility_certificate.detail', params: {id:id}}).then(r => {});
             });
     },
@@ -410,7 +415,9 @@ const Service = {
         this._create_request(vm, axios.delete('/api/users/' + String(id) + '/'),
             function (sender, response) {
                 // Remove from list
-                vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                if (vm.data) {
+                    vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                }
                 vm.finish_delete();
 
                 // Remove loading
@@ -420,31 +427,42 @@ const Service = {
     add_User(vm) {
         vm.$store.commit('setLoading');
         this._create_request(vm, axios.post('/api/users/', {
-                identity_card: vm.identity_card,
-                basic_medium: vm.basic_medium_id,
-                responsible: vm.responsible_id,
+                username: vm.username,
+                password: vm.password,
+                email: vm.email,
+                first_name: vm.first_name,
+                last_name: vm.last_name,
+                is_staff: vm.is_staff,
+                group_id: vm.group_id,
             }),
             function (sender, response) {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
-                // Redirect to List Warnings
-                vm.$router.push({name: 'responsibility_certificate'}).then(r => {});
+                // Redirect
+                vm.$router.push({name: 'user'}).then(r => {});
             });
     },
     edit_User(vm, id) {
         vm.$store.commit('setLoading');
-        this._create_request(vm, axios.put('/api/users/' + String(id) + '/', {
-                identity_card: vm.identity_card,
-                basic_medium: vm.basic_medium_id,
-                responsible: vm.responsible_id,
-            }),
+        let data ={
+            username: vm.username,
+            email: vm.email,
+            first_name: vm.first_name,
+            last_name: vm.last_name,
+            is_staff: vm.is_staff,
+            group_id: vm.group_id,
+        };
+        if (!validator.isNull(vm.password) && !validator.isEmpty(vm.password)) {
+            data['password'] = vm.password;
+        }
+        this._create_request(vm, axios.put('/api/users/' + String(id) + '/', data),
             function (sender, response) {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
-                // Redirect to List Warnings
-                vm.$router.push({name: 'responsibility_certificate.detail', params: {id:id}}).then(r => {});
+                // Redirect
+                vm.$router.push({name: 'user.detail', params: {id:id}}).then(r => {});
             });
     },
 

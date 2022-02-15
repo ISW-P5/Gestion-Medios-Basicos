@@ -17,51 +17,68 @@
         <CCardBody>
             <CForm v-model:was-validated="wasValidated">
                 <CInput
+                    label="Usuario *"
+                    placeholder="Usuario"
+                    :horizontal="horizontal"
+                    required
+                    :value.sync="username"
+                    :isValid="is_valid_username"
+                    invalid-feedback="No puede estar vacio."
+                  />
+                <CInput
+                    label="Contraseña *"
+                    placeholder="Contraseña"
+                    :horizontal="horizontal"
+                    type="password"
+                    required
+                    :value.sync="password"
+                    :isValid="is_valid_password"
+                    invalid-feedback="No puede estar vacio, no puede ser comun y debe contener minimo 8 caracteres."
+                  />
+                <CInput
+                    label="Dirección de correo *"
+                    placeholder="pepe@gmail.com"
+                    :horizontal="horizontal"
+                    type="email"
+                    required
+                    :value.sync="email"
+                    :isValid="is_valid_email"
+                    invalid-feedback="No puede estar vacio y debe ser una dirección de correo."
+                  />
+                <CInput
                     label="Nombre *"
-                    description="Nombre del Medio Basico"
                     placeholder="Nombre"
                     :horizontal="horizontal"
                     required
-                    :value.sync="name"
-                    :isValid="is_valid_name"
+                    :value.sync="first_name"
+                    :isValid="is_valid_first_name"
                     invalid-feedback="No puede estar vacio y solo puede contener letras."
                   />
                 <CInput
-                    label="Numero de Inventario *"
-                    placeholder="MB1234567"
+                    label="Apellido *"
+                    placeholder="Apellido"
                     :horizontal="horizontal"
                     required
-                    :value.sync="inventory_number"
-                    :isValid="is_valid_inventory_number"
-                    invalid-feedback="No puede estar vacio y debe contener 2 letras a continuacion de 7 digitos."
+                    :value.sync="last_name"
+                    :isValid="is_valid_last_name"
+                    invalid-feedback="No puede estar vacio y solo puede contener letras."
                   />
                 <CSelect
-                    label="Responsable *"
+                    label="Rol *"
                     :horizontal="horizontal"
-                    :options="responsible"
-                    placeholder="Seleccione un Responsable"
+                    :options="groups"
+                    placeholder="Seleccione un Rol"
                     required
-                    :value.sync="responsible_id"
-                    :isValid="is_valid_responsible_id"
-                    invalid-feedback="Debe seleccionarse un Responsable."
-                  />
-                <CInput
-                    label="Ubicacion *"
-                    placeholder="Ubicacion"
-                    :horizontal="horizontal"
-                    required
-                    :value.sync="location"
-                    :isValid="is_valid_location"
-                    invalid-feedback="No puede estar vacio y solo puede contener letras."
+                    :value.sync="group_id"
                   />
                 <CFormGroup class="form-group form-row">
                     <template #label>
-                        <label class="col-form-label col-md-2">Habilitado</label>
+                        <label class="col-form-label col-md-2">Es staff</label>
                     </template>
                     <template #input>
                         <CSwitch
                             color="success"
-                            :checked.sync="is_enable"
+                            :checked.sync="is_staff"
                             shape="pill"
                         />
                     </template>
@@ -83,9 +100,14 @@
             <CIcon name="cil-user"/>
             Ver Usuario ({{ get_full_name() }})
             <div class="card-header-actions" v-if="privilege_required(privilege, privileges.MODIFY)">
-                <CButton color="warning" size="sm" class="text-white"
+                <CButton color="warning" size="sm" class="text-white mr-2"
                          :to="{name: 'user.edit', params: {id:$route.params.id}}">
                     <CIcon name="cil-pencil" /> Editar
+                </CButton>
+                <CButton color="danger" size="sm"
+                         v-if="privilege_required(privilege, privileges.DELETE)"
+                         @click="set_delete()">
+                    <CIcon name="cil-trash" /> Eliminar
                 </CButton>
             </div>
         </CCardHeader>
@@ -104,8 +126,8 @@
                 </template>
                 <template #v="{item}">
                     <td v-if="typeof item.v == 'boolean'" class="col-md-8">
-                        <CBadge v-if="item.v" color="success" size="sm">Verdadero</CBadge>
-                        <CBadge v-else color="danger" size="sm">Falso</CBadge>
+                        <CBadge v-if="item.v" color="success" size="sm">Si</CBadge>
+                        <CBadge v-else color="danger" size="sm">No</CBadge>
                     </td>
                     <td v-else-if="item.v && item.v !== 'None' && item.v !== ''" class="col-md-8">
                         {{item.v}}
@@ -113,6 +135,15 @@
                 </template>
             </CDataTable>
         </CCardBody>
+        <!-- Delete Confirmation Modal -->
+        <CModal :centered="true" :scrollable="false" title="Eliminar!" size="sm" color="warning"
+                :show.sync="confirm_delete">
+            ¿Estas seguro de que quieres eliminar el usuario "{{ get_full_name() }}"?
+            <template #footer>
+                <CButton color="default" size="sm" @click="finish_delete()">Cancelar</CButton>
+                <CButton color="danger" size="sm" @click="remove()">¡Eliminar!</CButton>
+            </template>
+        </CModal>
     </CCard>
 </template>
 
@@ -151,7 +182,6 @@ export default {
                 {'p': 'Correo electrónico', 'v': this.email},
                 {'p': 'Nombre', 'v': this.first_name},
                 {'p': 'Apellido', 'v': this.last_name},
-                {'p': 'Ubicacion', 'v': this.location},
                 {'p': 'Cargo', 'v': this.group_name},
                 {'p': 'Es staff', 'v': this.is_staff},
             ];
@@ -167,8 +197,10 @@ export default {
                 && validator.onlyLettersAndNumbersWithoutSpace(this.username));
         },
         is_valid_password() {
-            return (!validator.isNull(this.password) && !validator.isEmpty(this.password) &&
-                validator.minLength(8, this.password));
+            // Not show password if is editing and validate when adding
+            return (this.$route.name === (this.route + '.add')) ?
+                (!validator.isNull(this.password) && !validator.isEmpty(this.password) &&
+                validator.minLength(8, this.password)) : true;
         },
         is_valid_email() {
             return (!validator.isNull(this.email) && !validator.isEmpty(this.email) && validator.isMail(this.email));
@@ -180,9 +212,6 @@ export default {
         is_valid_last_name() {
             return (!validator.isNull(this.last_name) && !validator.isEmpty(this.last_name) &&
                 validator.onlyLetters(this.last_name));
-        },
-        is_valid_group_id() {
-            return (!validator.isNull(this.group_id) && validator.isNumber(this.group_id) && this.group_id > 0);
         },
         is_valid() {
             return [
@@ -200,9 +229,6 @@ export default {
 
                 // Validate last name
                 this.is_valid_last_name(),
-
-                // Validate group
-                this.is_valid_group_id(),
             ].every((v) => v);
         },
         reset() {
@@ -227,6 +253,12 @@ export default {
         },
         metadata_queryset() {
             this.$services.getList_Roles(this);
+        },
+        remove() {
+            this.$services.remove_User(this, this.id);
+
+            // Redirect
+            this.$router.push({name: this.route});
         },
     },
 }

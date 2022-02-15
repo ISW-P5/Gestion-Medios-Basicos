@@ -43,7 +43,7 @@
                     required
                     :value.sync="identity_card"
                     :isValid="is_valid_identity_card"
-                    invalid-feedback="No puede estar vacio y solo puede contener numeros."
+                    invalid-feedback="No puede estar vacio y solo puede contener 11 digitos."
                   />
                 <CButton type="submit" @click="add" class="mr-1" color="success"
                          v-if="this.$route.name === (route + '.add') && privilege_required(privilege, privileges.ADD)">
@@ -62,9 +62,14 @@
             <CIcon name="cil-address-book"/>
             Ver Acta de Responsabilidad ({{ basic_medium_name + ' - ' + responsible_name }})
             <div class="card-header-actions" v-if="privilege_required(privilege, privileges.MODIFY)">
-                <CButton color="warning" size="sm" class="text-white"
+                <CButton color="warning" size="sm" class="text-white mr-2"
                          :to="{name: 'responsibility_certificate.edit', params: {id:$route.params.id}}">
                     <CIcon name="cil-pencil" /> Editar
+                </CButton>
+                <CButton color="danger" size="sm"
+                         v-if="privilege_required(privilege, privileges.DELETE)"
+                         @click="set_delete()">
+                    <CIcon name="cil-trash" /> Eliminar
                 </CButton>
             </div>
         </CCardHeader>
@@ -92,6 +97,16 @@
                 </template>
             </CDataTable>
         </CCardBody>
+        <!-- Delete Confirmation Modal -->
+        <CModal :centered="true" :scrollable="false" title="Eliminar!" size="sm" color="warning"
+                :show.sync="confirm_delete">
+            ¿Estas seguro de que quieres eliminar el acta de responsabilidad
+            "({{ basic_medium_name + ', ' + responsible_name }})"?
+            <template #footer>
+                <CButton color="default" size="sm" @click="finish_delete()">Cancelar</CButton>
+                <CButton color="danger" size="sm" @click="remove()">¡Eliminar!</CButton>
+            </template>
+        </CModal>
     </CCard>
 </template>
 
@@ -139,7 +154,7 @@ export default {
         },
         is_valid_identity_card() {
             return (!validator.isNull(this.identity_card) && !validator.isEmpty(this.identity_card) &&
-                validator.onlyNumbers(this.identity_card));
+                validator.onlyNumbers(this.identity_card) && validator.equalLength(11, this.identity_card));
         },
         is_valid_responsible_id() {
             return (!validator.isNull(this.responsible_id) && validator.isNumber(this.responsible_id) &&
@@ -176,6 +191,12 @@ export default {
         metadata_queryset() {
             this.$services.getList_MediumsCertificate(this);
             this.$services.getList_Responsible(this);
+        },
+        remove() {
+            this.$services.remove_ResponsibilityCertificate(this, this.id);
+
+            // Redirect
+            this.$router.push({name: this.route});
         },
     },
 }

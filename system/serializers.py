@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Permission, Group
 from django.utils.timezone import now
 from rest_framework import serializers
 from rest_framework.pagination import PageNumberPagination
@@ -27,7 +27,6 @@ class PageNumberSizePagination(PageNumberPagination):
 class SimpleUserSerializer(serializers.ModelSerializer):
     """Serializador Simple del Modelo Usuario"""
     role = serializers.SerializerMethodField(label='Rol', allow_null=True)
-    role_id = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -38,30 +37,50 @@ class SimpleUserSerializer(serializers.ModelSerializer):
         group = obj.groups.first()
         return group.name if group else None
 
-    def get_role_id(self, obj):
-        """Devolver el ID del Rol"""
-        group = obj.groups.first()
-        return group.id if group else 0
-
 
 class UserSerializer(SimpleUserSerializer):
     """Serializador Modelo Usuario"""
     permissions = serializers.SerializerMethodField(label='Permisos', default={})
+    role_id = serializers.SerializerMethodField()
+    group_id = serializers.IntegerField(write_only=True, required=False)
 
     class Meta(SimpleUserSerializer.Meta):
-        fields = ('url', 'id', 'username', 'password', 'email', 'first_name', 'last_name', 'is_staff', 'role', 'role_id', 'permissions')
-
-        # These fields are displayed but not editable and have to be a part of 'fields' tuple
-        read_only_fields = ('date_joined',)
+        fields = ('url', 'id', 'username', 'password', 'email', 'first_name', 'last_name', 'is_staff', 'group_id',
+                  'role', 'role_id', 'permissions')
 
         # These fields are only editable (not displayed) and have to be a part of 'fields' tuple
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'write_only': True, 'required': False}}
 
     def create(self, validated_data):
         """Override Create and add date_joined how now"""
+        group = validated_data.get('group_id', 0)
+        if group <= 0:
+            validated_data.pop('group_id')
         instance = super(UserSerializer, self).create(validated_data)
         instance.date_joined = now()
+        # Extract group from data and assign it
+        if group > 0:
+            instance.groups.set(Group.objects.filter(pk=group))
+        # Extract password from data and set password
+        password = validated_data.get('password', None)
+        if password is not None:
+            instance.set_password(password)
         return instance
+
+    def update(self, instance, validated_data):
+        user = super(UserSerializer, self).update(instance, validated_data)
+        # Extract group from data and assign it
+        group = validated_data.get('group_id', 0)
+        if group > 0:
+            user.groups.set(Group.objects.filter(pk=group))
+        try:
+            password = validated_data.get('password', None)
+            if password is not None:
+                user.set_password(password)
+                user.save()
+        except KeyError:
+            pass
+        return user
 
     def get_permissions(self, user):
         """Obtener los permisos del sistema"""
@@ -85,6 +104,11 @@ class UserSerializer(SimpleUserSerializer):
         """Obtenemos los permisos segun el sistema"""
         # Permissions: 0 - View, 1 - Add, 2 - Modify, 3 - Delete
         return 0 if action == 'view' else 1 if action == 'add' else 2 if action == 'change' else 3 if action == 'delete' else -1
+
+    def get_role_id(self, obj):
+        """Devolver el ID del Rol"""
+        group = obj.groups.first()
+        return group.id if group else 0
 
 
 class SimpleBasicMediumExpedientSerializer(serializers.ModelSerializer):

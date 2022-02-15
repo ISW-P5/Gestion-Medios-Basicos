@@ -10,6 +10,8 @@ export default {
     data() {
         return {
             privileges,
+            // Deleting
+            confirm_delete: false,
             // Forms Data
             wasValidated: false,
             horizontal: { label:'col-md-2', input:'col-md-10' },
@@ -44,6 +46,12 @@ export default {
                     return 'Editar';
             }
             return '';
+        },
+        set_delete() {
+            this.confirm_delete = true;
+        },
+        finish_delete() {
+            this.confirm_delete = false;
         },
         ...mapGetters(['privilege_required'])
     },

@@ -83,9 +83,14 @@
             <CIcon name="cil-book"/>
             Ver Medio Basico ({{ name + ' - ' + inventory_number }})
             <div class="card-header-actions" v-if="privilege_required(privilege, privileges.MODIFY)">
-                <CButton color="warning" size="sm" class="text-white"
+                <CButton color="warning" size="sm" class="text-white mr-2"
                          :to="{name: 'basic_medium.edit', params: {id:$route.params.id}}">
                     <CIcon name="cil-pencil" /> Editar
+                </CButton>
+                <CButton color="danger" size="sm"
+                         v-if="privilege_required(privilege, privileges.DELETE)"
+                         @click="set_delete()">
+                    <CIcon name="cil-trash" /> Eliminar
                 </CButton>
             </div>
         </CCardHeader>
@@ -113,6 +118,15 @@
                 </template>
             </CDataTable>
         </CCardBody>
+        <!-- Delete Confirmation Modal -->
+        <CModal :centered="true" :scrollable="false" title="Eliminar!" size="sm" color="warning"
+                :show.sync="confirm_delete">
+            ¿Estas seguro de que quieres eliminar el medio basico "{{ name + ' - ' + inventory_number }}"?
+            <template #footer>
+                <CButton color="default" size="sm" @click="finish_delete()">Cancelar</CButton>
+                <CButton color="danger" size="sm" @click="remove()">¡Eliminar!</CButton>
+            </template>
+        </CModal>
     </CCard>
 </template>
 
@@ -167,7 +181,7 @@ export default {
         },
         is_valid_location() {
             return (!validator.isNull(this.location) && !validator.isEmpty(this.location) &&
-                validator.onlyLetters(this.location));
+                validator.onlyLettersAndNumbers(this.location));
         },
         is_valid() {
             return [
@@ -203,6 +217,12 @@ export default {
         },
         metadata_queryset() {
             this.$services.getList_Responsible(this);
+        },
+        remove() {
+            this.$services.remove_BasicMedium(this, this.id);
+
+            // Redirect
+            this.$router.push({name: this.route});
         },
     },
 }
