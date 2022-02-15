@@ -69,7 +69,6 @@ venv
 \static/range_filter
 \static/admin
 \static/jet*
-*.scss
 *.map
 *.pyc
 system/static/css
