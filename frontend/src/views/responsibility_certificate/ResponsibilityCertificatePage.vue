@@ -2,10 +2,11 @@
     <div v-if="this.$route.name === route">
         <CCard>
             <CCardHeader>
-                <CIcon name="cil-book"/>
-                Listado de Medios Basicos<span v-model="data.count" v-if="data"> ({{ data.count }})</span>
+                <CIcon name="cil-address-book"/>
+                Listado de Actas de Responsabilidad<span v-model="data.count" v-if="data"> ({{ data.count }})</span>
                 <div class="card-header-actions" v-if="privilege_required(privilege, privileges.ADD)">
-                    <CButton color="success" size="sm" :to="{ name: 'basic_medium.add' }" :disabled="!(data)">
+                    <CButton color="success" size="sm" :to="{ name: 'responsibility_certificate.add' }"
+                             :disabled="!(data)">
                         <CIcon name="cil-plus" /> Agregar
                     </CButton>
                 </div>
@@ -17,7 +18,7 @@
             <!-- Data Table -->
             <CCardBody v-else>
                 <CDataTable
-                    :items="data.items"
+                    :items="items"
                     :fields="fields"
                     v-model:tableFilterValue="appliedFilter"
                     @update:table-filter-value="(v) => this.filter = v"
@@ -56,29 +57,23 @@
                     </template>
 
                     <!-- Table Custom Fields -->
-                    <template #name="{item}">
+                    <template #medium="{item}">
                         <td v-if="privilege_required(privilege, privileges.VIEW)">
-                            <CLink :to="{name: 'basic_medium.detail', params: {id:item.id}}">
-                                {{ item.name }}
+                            <CLink :to="{name: 'responsibility_certificate.detail', params: {id:item.id}}">
+                                {{ item.medium }}
                             </CLink>
                         </td>
-                        <td v-else>{{ item.name }}</td>
+                        <td v-else>{{ item.medium }}</td>
                     </template>
-                    <template #owner="{item}">
+                    <template #datetime="{item}">
                         <td>
-                            {{ get_full_name(item) }}
-                        </td>
-                    </template>
-                    <template #is_enable="{item}">
-                        <td>
-                            <CBadge v-if="item.is_enable" color="success">Verdadero</CBadge>
-                            <CBadge v-else color="danger">Falso</CBadge>
+                            {{ item.datetime | formatDate }}
                         </td>
                     </template>
                     <template #actions="{item}">
                         <td class="py-2">
                             <CButton color="warning" size="sm" class="mr-2 text-white"
-                                     :to="{name: 'basic_medium.edit', params: {id:item.id}}">
+                                     :to="{name: 'responsibility_certificate.edit', params: {id:item.id}}">
                                 <CIcon name="cil-pencil" /> Editar
                             </CButton>
                             <CButton color="danger" square size="sm"
@@ -99,7 +94,8 @@
         <!-- Delete Confirmation Modal -->
         <CModal :centered="true" :scrollable="false" title="Eliminar!" size="sm" color="warning"
                 :show.sync="confirm_delete" v-if="delete_data">
-            ¿Estas seguro de que quieres eliminar el medio basico "{{ delete_data.name + ' - ' + delete_data.inventory_number }}"?
+            ¿Estas seguro de que quieres eliminar el acta de responsabilidad
+            "({{ delete_data.medium + ', ' + delete_data.owner }})"?
             <template #footer>
                 <CButton color="default" size="sm" @click="finish_delete()">Cancelar</CButton>
                 <CButton color="danger" size="sm" @click="remove()">¡Eliminar!</CButton>
@@ -117,25 +113,40 @@ import table_list from "../../mixins/tablelist";
 
 const fields = [
     { key: 'id', label: '#', _style: 'width:1%' },
-    { key: 'name', label: 'Nombre' },
-    { key: 'inventory_number', label: 'Numero de Inventario' },
-    { key: 'owner', label: 'Responsable', sorter: false, filter: false },
-    { key: 'location', label: 'Ubicacion' },
-    { key: 'is_enable', label: 'Estado', filter: false },
+    { key: 'medium', label: 'Medio Basico' },
+    { key: 'owner', label: 'Responsable', sorter: false },
+    { key: 'identity_card', label: 'Carnet de Identidad' },
+    { key: 'datetime', label: 'Fecha', filter: false },
     { key: 'actions', label: 'Acciones', sorter: false, filter: false }
 ];
 
 export default {
-    name: "BasicMediumPage",
-    title: 'Admin | Medios Basicos',
-    panel_title: 'Lista de Medios Basicos',
+    name: "ResponsibilityCertificatePage",
+    title: 'Admin | Acta de Responsabilidad',
+    panel_title: 'Lista de Actas de Responsabilidad',
     mixins: [loading, table_list],
     data() {
         return {
             // Static Data
-            route: 'basic_medium',
-            privilege: 'basicmediumexpedient',
+            route: 'responsibility_certificate',
+            privilege: 'responsibilitycertificate',
             fields,
+        }
+    },
+    computed: {
+        // Cleared items
+        items() {
+            let list = [];
+            this.data.items.forEach((value) => {
+                list.push({
+                    id: value.id,
+                    medium: value.medium.name + ' - ' + value.medium.inventory_number,
+                    owner: this.get_full_name(value),
+                    identity_card: value.identity_card,
+                    datetime: value.datetime,
+                });
+            });
+            return list;
         }
     },
     methods: {
@@ -146,10 +157,10 @@ export default {
         },
         // QuerySet (CRUD)
         get_queryset() {
-            this.$services.getList_BasicMedium(this);
+            this.$services.getList_ResponsibilityCertificate(this);
         },
         remove() {
-            this.$services.remove_BasicMedium(this, this.delete_data.id);
+            this.$services.remove_ResponsibilityCertificate(this, this.delete_data.id);
         },
     },
 }

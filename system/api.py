@@ -1,4 +1,5 @@
 import json
+from abc import abstractmethod
 
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -9,22 +10,7 @@ from .serializers import (UserSerializer, BasicMediumExpedientSerializer, Reques
                           MovementTicketSerializer, ResponsibilityCertificateSerializer)
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.filter(is_active=True).order_by('-date_joined')
-    serializer_class = UserSerializer
-
-    def filter_queryset(self, queryset):
-        filters = self.request.GET.get('filter', None)
-        if filters is not None and filters != '':
-            return queryset.filter(Q(username__contains=filters) | Q(first_name__contains=filters) |
-                                   Q(last_name__contains=filters)).order_by('-date_joined')
-        return queryset
-
-
-class BasicMediumExpedientViewSet(viewsets.ModelViewSet):
-    queryset = BasicMediumExpedient.objects.filter(is_enable=True)
-    serializer_class = BasicMediumExpedientSerializer
-
+class FilterViewSetMixin(viewsets.ModelViewSet):
     def filter_queryset(self, queryset):
         filters = self.request.GET.get('filter', None)
         try:
@@ -32,22 +18,55 @@ class BasicMediumExpedientViewSet(viewsets.ModelViewSet):
         except Exception:  # Dont can read ordering data (because is not a json)
             ordering = {'asc': True, 'column': 'id'}
         if filters is not None and filters != '':
-            return queryset.filter(Q(name__contains=filters) |
-                                   Q(inventory_number__contains=filters) |
-                                   Q(location__contains=filters))
+            queryset = self.get_filter(queryset, filters)
         return queryset.order_by(('-' if not ordering.get('asc') else '') + ordering.get('column'))
 
+    @abstractmethod
+    def get_filter(self, queryset, value):
+        return queryset
 
-class RequestTicketViewSet(viewsets.ModelViewSet):
+
+class UserViewSet(FilterViewSetMixin):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+
+    def get_filter(self, queryset, value):
+        return queryset.filter(Q(username__contains=value) | Q(first_name__contains=value) |
+                               Q(last_name__contains=value)).order_by('-date_joined')
+
+
+class BasicMediumExpedientViewSet(FilterViewSetMixin):
+    queryset = BasicMediumExpedient.objects.all()
+    serializer_class = BasicMediumExpedientSerializer
+
+    def get_filter(self, queryset, value):
+        return queryset.filter(Q(name__contains=value) |
+                               Q(inventory_number__contains=value) |
+                               Q(location__contains=value))
+
+
+class RequestTicketViewSet(FilterViewSetMixin):
     queryset = RequestTicket.objects.all()
     serializer_class = RequestTicketSerializer
 
+    def get_filter(self, queryset, value):
+        return super(RequestTicketViewSet, self).get_filter(queryset, value)
 
-class MovementTicketViewSet(viewsets.ModelViewSet):
+
+class MovementTicketViewSet(FilterViewSetMixin):
     queryset = MovementTicket.objects.all()
     serializer_class = MovementTicketSerializer
 
+    def get_filter(self, queryset, value):
+        return super(MovementTicketViewSet, self).get_filter(queryset, value)
 
-class ResponsibilityCertificateViewSet(viewsets.ModelViewSet):
-    queryset = ResponsibilityCertificate.objects.all()
+
+class ResponsibilityCertificateViewSet(FilterViewSetMixin):
+    queryset = ResponsibilityCertificate.objects.filter(basic_medium__is_enable=True)
     serializer_class = ResponsibilityCertificateSerializer
+
+    def get_filter(self, queryset, value):
+        return queryset.filter(Q(identity_card__contains=value) |
+                               Q(basic_medium__inventory_number__contains=value) |
+                               Q(basic_medium__name__contains=value) |
+                               Q(responsible__username__contains=value))

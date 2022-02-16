@@ -1,7 +1,6 @@
 from collections import OrderedDict
 
 from django.contrib.auth.models import User, Permission
-from django.core.paginator import Paginator
 from django.utils.timezone import now
 from rest_framework import serializers
 from rest_framework.pagination import PageNumberPagination
@@ -23,7 +22,7 @@ class PageNumberSizePagination(PageNumberPagination):
         ]))
 
 
-class BasicUserSerializer(serializers.ModelSerializer):
+class SimpleUserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField(label='Rol', allow_null=True)
 
     class Meta:
@@ -35,11 +34,10 @@ class BasicUserSerializer(serializers.ModelSerializer):
         return group.name if group else None
 
 
-class UserSerializer(BasicUserSerializer):
+class UserSerializer(SimpleUserSerializer):
     permissions = serializers.SerializerMethodField(label='Permisos', default={})
 
-    class Meta:
-        model = User
+    class Meta(SimpleUserSerializer.Meta):
         fields = ('url', 'username', 'password', 'email', 'first_name', 'last_name', 'is_staff', 'role', 'permissions')
 
         # These fields are displayed but not editable and have to be a part of 'fields' tuple
@@ -72,16 +70,22 @@ class UserSerializer(BasicUserSerializer):
         return 0 if action == 'view' else 1 if action == 'add' else 2 if action == 'change' else 3 if action == 'delete' else -1
 
 
-class BasicMediumExpedientSerializer(serializers.ModelSerializer):
-    owner = BasicUserSerializer(source='responsible', read_only=True)
+class SimpleBasicMediumExpedientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BasicMediumExpedient
-        fields = ('url', 'id', 'name', 'inventory_number', 'responsible', 'owner', 'location', 'is_enable')
+        fields = ('url', 'id', 'name', 'inventory_number', 'responsible', 'location', 'is_enable')
         read_only_fields = ('id',)
         extra_kwargs = {
             'responsible': {'write_only': True},
         }
+
+
+class BasicMediumExpedientSerializer(SimpleBasicMediumExpedientSerializer):
+    owner = SimpleUserSerializer(source='responsible', read_only=True)
+
+    class Meta(SimpleBasicMediumExpedientSerializer.Meta):
+        fields = ('url', 'id', 'name', 'inventory_number', 'responsible', 'owner', 'location', 'is_enable')
 
 
 class RequestTicketSerializer(serializers.ModelSerializer):
@@ -97,6 +101,13 @@ class MovementTicketSerializer(serializers.ModelSerializer):
 
 
 class ResponsibilityCertificateSerializer(serializers.ModelSerializer):
+    owner = SimpleUserSerializer(source='responsible', read_only=True)
+    medium = SimpleBasicMediumExpedientSerializer(source='basic_medium', read_only=True)
+
     class Meta:
         model = ResponsibilityCertificate
-        fields = ('url', 'responsible', 'identity_card', 'basic_medium', 'datetime')
+        fields = ('url', 'id', 'identity_card', 'basic_medium', 'medium', 'responsible', 'owner', 'datetime')
+        extra_kwargs = {
+            'responsible': {'write_only': True},
+            'basic_medium': {'write_only': True},
+        }

@@ -68,16 +68,6 @@ export function getSidebar(permission) {
                 icon: 'cil-user'
             });
         }
-
-        // Grupo
-        if (permission.group && permission.group.includes(0)) {
-            addElementToSidebar(sidebar, {
-                _name: 'CSidebarNavItem',
-                name: 'Grupos',
-                to: {name: 'group'},
-                icon: 'cil-group'
-            });
-        }
     }
 
     // Documentation and Develop

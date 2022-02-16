@@ -3,7 +3,6 @@ import axios from 'axios';
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-// TODO: Create and Migrate all API Methods to Async/Await
 const Service = {
     // Attempts
     attempts: 0,
@@ -167,6 +166,41 @@ const Service = {
             });
     },
 
+    getList_Responsible(vm, all=false) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/responsible/', {
+                params: {all:all}
+            }),
+            function (sender, response) {
+                vm.responsible = response.data.responsible;
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    getList_MediumsCertificate(vm, excluded = -1) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/mediums_certificate/', {
+                params: {
+                    excluded_id: excluded
+                }
+            }),
+            function (sender, response) {
+                vm.basic_medium = response.data.basic_medium;
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    getList_Mediums(vm) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/mediums/'),
+            function (sender, response) {
+                vm.basic_medium = response.data.basic_medium;
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+
+    // List, Detail, Remove, Add and Edit Basic Medium
     getList_BasicMedium(vm) {
         // TODO: Removed default loading because using TableSkeletonLoading
         // vm.$store.commit('setLoading');
@@ -185,10 +219,11 @@ const Service = {
                 vm.$store.commit('removeLoading');
             });
     },
-    get_BasicMedium(vm, id) {
+    detail_BasicMedium(vm, id) {
         vm.$store.commit('setLoading');
-        this._create_request(vm, axios.get('/api/basic_medium/ ' + String(id) + '/'),
+        this._create_request(vm, axios.get('/api/basic_medium/' + String(id) + '/'),
             function (sender, response) {
+                vm.id = response.data.id;
                 vm.name = response.data.name;
                 vm.inventory_number = response.data.inventory_number;
                 vm.location = response.data.location;
@@ -212,15 +247,6 @@ const Service = {
                 // Remove loading
                 vm.$store.commit('removeLoading');
             }, false);
-    },
-    metadata_BasicMedium(vm) {
-        vm.$store.commit('setLoading');
-        this._create_request(vm, axios.get('/api/basic_medium/metadata/'),
-            function (sender, response) {
-                vm.responsible = response.data.responsible;
-                // Remove loading
-                vm.$store.commit('removeLoading');
-            });
     },
     add_BasicMedium(vm) {
         vm.$store.commit('setLoading');
@@ -256,6 +282,89 @@ const Service = {
                 vm.$router.push({name: 'basic_medium.detail', params: {id:id}}).then(r => {});
             });
     },
+
+    // List, Detail, Remove, Add and Edit Responsibility Certificate
+    getList_ResponsibilityCertificate(vm) {
+        this._create_request(vm, axios.get('/api/responsibility_certificate/', {
+                params: {
+                    page: vm.page,
+                    per_page: vm.per_page,
+                    filter: vm.appliedFilter,
+                    ordering: vm.ordering,
+                }
+            }), function (sender, response) {
+                vm.data = response.data;
+                vm.loading = false;
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    detail_ResponsibilityCertificate(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/responsibility_certificate/' + String(id) + '/'),
+            function (sender, response) {
+                vm.id = response.data.id;
+                vm.identity_card = response.data.identity_card;
+                vm.basic_medium_id = response.data.medium.id;
+                vm.basic_medium_name = response.data.medium.name;
+                vm.responsible_id = response.data.owner.id;
+                let value = response.data.owner.first_name + ' ' + response.data.owner.last_name;
+                vm.responsible_name = (value.length === 0 || !value.trim()) ? response.data.owner.username : value;
+                vm.datetime = response.data.datetime;
+
+                sender.getList_MediumsCertificate(vm, response.data.medium.id);
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    remove_ResponsibilityCertificate(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.delete('/api/responsibility_certificate/' + String(id) + '/'),
+            function (sender, response) {
+                // Remove from list
+                vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                vm.finish_delete();
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            }, false);
+    },
+    add_ResponsibilityCertificate(vm) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.post('/api/responsibility_certificate/', {
+                identity_card: vm.identity_card,
+                basic_medium: vm.basic_medium_id,
+                responsible: vm.responsible_id,
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect to List Warnings
+                vm.$router.push({name: 'responsibility_certificate'}).then(r => {});
+            });
+    },
+    edit_ResponsibilityCertificate(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.put('/api/responsibility_certificate/' + String(id) + '/', {
+                identity_card: vm.identity_card,
+                basic_medium: vm.basic_medium_id,
+                responsible: vm.responsible_id,
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect to List Warnings
+                vm.$router.push({name: 'responsibility_certificate.detail', params: {id:id}}).then(r => {});
+            });
+    },
+
+    // List, Detail, Remove, Add and Edit User
+
+    // List, Detail, Remove, Add and Edit Group
 };
 
 export default Service;

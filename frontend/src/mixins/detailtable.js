@@ -54,5 +54,12 @@ export default {
             document.title = title;
             this.$store.state.panelTitle = panel_title || 'Panel Administrativo';
         }
+
+        if (this.$route.name !== (this.route + '.add')) {
+            this.get_queryset();
+        }
+        if (this.$route.name === (this.route + '.add') || this.$route.name === (this.route + '.edit')) {
+            this.metadata_queryset();
+        }
     }
 };

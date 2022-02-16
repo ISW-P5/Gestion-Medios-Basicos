@@ -6,6 +6,8 @@ from django.shortcuts import redirect, render
 from django.http import JsonResponse, HttpResponse
 
 from .libs.avatar import get_svg_avatar
+from .models import BasicMediumExpedient
+from .utils import create_default_groups
 
 
 # Create your views here.
@@ -34,9 +36,12 @@ def login_api(request):
 
 
 def user_data_api(request):
+    # Set Permissions and create groups by default system if not exists
+    create_default_groups()
+
     return JsonResponse({
-        'id': request.user.id,
-        'username': request.user.username
+                            'id': request.user.id,
+                            'username': request.user.username
                         } if not request.user.is_anonymous else {
         'detail': "Las credenciales de autenticación no se proveyeron."
     })
@@ -52,7 +57,10 @@ def avatar(request, **kwargs):
 
 
 @login_required
-def basic_medium_metadata(request):
+def responsible_metadata(request):
+    get_all = request.GET.get('all', None)
+    if get_all == 'false':
+        get_all = None
     return JsonResponse({
         'responsible': [
             {
@@ -60,6 +68,42 @@ def basic_medium_metadata(request):
                 'label': r.username
                 if r.first_name.strip() == '' or r.last_name.strip() == '' else (r.first_name + ' ' + r.last_name)
             }
-            for r in User.objects.filter(is_staff=True)
+            for r in (User.objects.filter(is_staff=True) if get_all is None else User.objects.all())
+        ]
+    })
+
+
+@login_required
+def basic_medium_without_certificate_metadata(request):
+    # Filter basic medium is enable and not have responsibility certificate
+    uid = request.GET.get('excluded_id', None)
+    try:
+        uid = BasicMediumExpedient.objects.get(id=uid)
+    except BasicMediumExpedient.DoesNotExist:
+        uid = None
+    return JsonResponse({
+        'basic_medium': [
+            {
+                'value': r.id,
+                'label': r.inventory_number + ' - ' + r.name
+            } for r in
+            BasicMediumExpedient.objects.filter(is_enable=True, responsibilitycertificate__isnull=True)
+        ] + ([
+             {
+                 'value': uid.id,
+                 'label': uid.inventory_number + ' - ' + uid.name
+             }
+             ] if uid is not None else [])
+    })
+
+
+@login_required
+def basic_medium_metadata(request):
+    return JsonResponse({
+        'basic_medium': [
+            {
+                'value': r.id,
+                'label': r.inventory_number + ' - ' + r.name
+            } for r in BasicMediumExpedient.objects.filter(is_enable=True)
         ]
     })

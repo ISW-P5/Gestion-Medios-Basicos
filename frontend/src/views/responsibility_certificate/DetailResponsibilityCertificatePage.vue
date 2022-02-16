@@ -2,38 +2,29 @@
     <CCard v-if="this.$route.name === (route + '.add') || this.$route.name === (route + '.edit')">
         <CCardHeader v-if="this.$route.name === (route + '.add')">
             <CIcon name="cil-plus"/>
-            Añadir Medio Basico
+            Añadir Acta de Responsabilidad
         </CCardHeader>
         <CCardHeader v-else>
-            <CIcon name="cil-book"/>
-            Editar Medio Basico
+            <CIcon name="cil-address-book"/>
+            Editar Acta de Responsabilidad
             <div class="card-header-actions" v-if="privilege_required(privilege, privileges.MODIFY)">
                 <CButton color="danger" size="sm"
-                         :to="{name: 'basic_medium.detail', params: {id:$route.params.id}}">
+                         :to="{name: 'responsibility_certificate.detail', params: {id:$route.params.id}}">
                     <CIcon name="cil-ban" /> Cancelar
                 </CButton>
             </div>
         </CCardHeader>
         <CCardBody>
             <CForm v-model:was-validated="wasValidated">
-                <CInput
-                    label="Nombre *"
-                    description="Nombre del Medio Basico"
-                    placeholder="Nombre"
+                <CSelect
+                    label="Medio Basico *"
                     :horizontal="horizontal"
+                    :options="basic_medium"
+                    placeholder="Seleccione un Medio Basico"
                     required
-                    :value.sync="name"
-                    :isValid="is_valid_name"
-                    invalid-feedback="No puede estar vacio y solo puede contener letras."
-                  />
-                <CInput
-                    label="Numero de Inventario *"
-                    placeholder="MB1234567"
-                    :horizontal="horizontal"
-                    required
-                    :value.sync="inventory_number"
-                    :isValid="is_valid_inventory_number"
-                    invalid-feedback="No puede estar vacio y debe contener 2 letras a continuacion de 7 digitos."
+                    :value.sync="basic_medium_id"
+                    :isValid="is_valid_basic_medium_id"
+                    invalid-feedback="Debe seleccionarse un Medio Basico."
                   />
                 <CSelect
                     label="Responsable *"
@@ -46,26 +37,14 @@
                     invalid-feedback="Debe seleccionarse un Responsable."
                   />
                 <CInput
-                    label="Ubicacion *"
-                    placeholder="Ubicacion"
+                    label="Carnet de Identidad *"
+                    placeholder="Carnet de Identidad"
                     :horizontal="horizontal"
                     required
-                    :value.sync="location"
-                    :isValid="is_valid_location"
-                    invalid-feedback="No puede estar vacio y solo puede contener letras."
+                    :value.sync="identity_card"
+                    :isValid="is_valid_identity_card"
+                    invalid-feedback="No puede estar vacio y solo puede contener numeros."
                   />
-                <CFormGroup class="form-group form-row">
-                    <template #label>
-                        <label class="col-form-label col-md-2">Habilitado</label>
-                    </template>
-                    <template #input>
-                        <CSwitch
-                            color="success"
-                            :checked.sync="is_enable"
-                            shape="pill"
-                        />
-                    </template>
-                </CFormGroup>
                 <CButton type="submit" @click="add" class="mr-1" color="success"
                          v-if="this.$route.name === (route + '.add') && privilege_required(privilege, privileges.ADD)">
                     <CIcon name="cil-check-circle"/> Enviar
@@ -80,11 +59,11 @@
     </CCard>
     <CCard v-else-if="this.$route.name === (route + '.detail')">
         <CCardHeader>
-            <CIcon name="cil-book"/>
-            Ver Medio Basico ({{ name + ' - ' + inventory_number }})
+            <CIcon name="cil-address-book"/>
+            Ver Acta de Responsabilidad ({{ basic_medium_name + ' - ' + responsible_name }})
             <div class="card-header-actions" v-if="privilege_required(privilege, privileges.MODIFY)">
                 <CButton color="warning" size="sm" class="text-white"
-                         :to="{name: 'basic_medium.edit', params: {id:$route.params.id}}">
+                         :to="{name: 'responsibility_certificate.edit', params: {id:$route.params.id}}">
                     <CIcon name="cil-pencil" /> Editar
                 </CButton>
             </div>
@@ -121,89 +100,87 @@ import detail_table from "../../mixins/detailtable";
 import validator from "../../helpers/validator";
 
 export default {
-    name: "DetailBasicMediumPage",
-    title: 'Admin | Medio Basico',
-    panel_title: 'Medio Basico',
+    name: "DetailResponsibilityCertificatePage",
+    title: 'Admin | Acta de Responsabilidad',
+    panel_title: 'Acta de Responsabilidad',
     mixins: [detail_table],
     data() {
         return {
             // Static Data
-            route: 'basic_medium',
-            privilege: 'basicmediumexpedient',
+            route: 'responsibility_certificate',
+            privilege: 'responsibilitycertificate',
             // Values
             id: '',
-            name: '',
-            inventory_number: '',
-            location: '',
+            identity_card: '',
+            basic_medium_id: 0,
+            basic_medium_name: '',
+            basic_medium: [],
+            datetime: '',
             responsible_id: 0,
             responsible_name: '',
             responsible: [],
-            is_enable: true,
         }
     },
     computed: {
         detail() {
             return [
                 {'p': 'ID', 'v': this.id},
-                {'p': 'Nombre', 'v': this.name},
-                {'p': 'Numero de Inventario', 'v': this.inventory_number},
+                {'p': 'Medio Basico', 'v': this.basic_medium_name},
                 {'p': 'Responsable', 'v': this.responsible_name},
-                {'p': 'Ubicacion', 'v': this.location},
-                {'p': 'Habilitado', 'v': this.is_enable},
+                {'p': 'Carnet de Identidad', 'v': this.identity_card},
+                {'p': 'Fecha', 'v': this.$options.filters.formatDate(this.datetime)},
             ];
         }
     },
     methods: {
-        is_valid_name() {
-            return (!validator.isNull(this.name) && !validator.isEmpty(this.name) && validator.onlyLetters(this.name));
+        is_valid_basic_medium_id() {
+            return (!validator.isNull(this.basic_medium_id) && validator.isNumber(this.basic_medium_id) &&
+                this.basic_medium_id > 0);
         },
-        is_valid_inventory_number() {
-            return (!validator.isNull(this.inventory_number) && !validator.isEmpty(this.inventory_number) &&
-                validator.inventoryNumberIsValid(this.inventory_number));
+        is_valid_identity_card() {
+            return (!validator.isNull(this.identity_card) && !validator.isEmpty(this.identity_card) &&
+                validator.onlyNumbers(this.identity_card));
         },
         is_valid_responsible_id() {
             return (!validator.isNull(this.responsible_id) && validator.isNumber(this.responsible_id) &&
                 this.responsible_id > 0);
         },
-        is_valid_location() {
-            return (!validator.isNull(this.location) && !validator.isEmpty(this.location) &&
-                validator.onlyLetters(this.location));
-        },
         is_valid() {
             return [
-                // Validate name
-                this.is_valid_name(),
+                // Validate basic medium
+                this.is_valid_basic_medium_id(),
 
-                // Validate inventory number
-                this.is_valid_inventory_number(),
+                // Validate identity card
+                this.is_valid_identity_card(),
 
                 // Validate responsible
                 this.is_valid_responsible_id(),
-
-                // Validate location
-                this.is_valid_location(),
             ].every((v) => v);
         },
         reset() {
             this.id = '';
-            this.name = '';
-            this.inventory_number = '';
-            this.location = '';
+            this.identity_card = '';
+            this.basic_medium_id = 0;
+            this.datetime = '';
             this.responsible_id = 0;
-            this.is_enable = true;
         },
         add_queryset() {
-            this.$services.add_BasicMedium(this);
+            this.$services.add_ResponsibilityCertificate(this);
         },
         edit_queryset() {
-            this.$services.edit_BasicMedium(this, this.$route.params.id);
+            this.$services.edit_ResponsibilityCertificate(this, this.$route.params.id);
         },
         get_queryset() {
-            this.$services.detail_BasicMedium(this, this.$route.params.id);
+            this.$services.detail_ResponsibilityCertificate(this, this.$route.params.id);
         },
         metadata_queryset() {
+            this.$services.getList_MediumsCertificate(this);
             this.$services.getList_Responsible(this);
         },
     },
 }
 </script>
+
+<style scoped>
+
+</style>

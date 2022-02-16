@@ -6,6 +6,8 @@ import ErrorPage from "../views/errors/ErrorPage";
 import HelpPage from "../views/extra/HelpPage";
 import BasicMediumPage from "../views/basic_medium/BasicMediumPage";
 import DetailBasicMediumPage from "../views/basic_medium/DetailBasicMediumPage";
+import ResponsibilityCertificatePage from "../views/responsibility_certificate/ResponsibilityCertificatePage";
+import DetailResponsibilityCertificatePage from "../views/responsibility_certificate/DetailResponsibilityCertificatePage";
 
 Vue.use(VueRouter);
 
@@ -104,25 +106,25 @@ const routes = [
                 path: 'certificate/',
                 name: 'responsibility_certificate',
                 meta: {label: 'Actas de Responsabilidad'},
-                component: HelpPage,
+                component: ResponsibilityCertificatePage,
                 children: [
                     {
                         path: 'add/',
                         name: 'responsibility_certificate.add',
                         meta: {label: 'Añadir Acta de Responsabilidad'},
-                        component: HelpPage
+                        component: DetailResponsibilityCertificatePage
                     },
                     {
                         path: ':id/detail/',
                         name: 'responsibility_certificate.detail',
                         meta: {label: 'Ver Acta de Responsabilidad'},
-                        component: HelpPage
+                        component: DetailResponsibilityCertificatePage
                     },
                     {
                         path: ':id/edit/',
                         name: 'responsibility_certificate.edit',
                         meta: {label: 'Editar Acta de Responsabilidad'},
-                        component: HelpPage
+                        component: DetailResponsibilityCertificatePage
                     },
                 ]
             },
