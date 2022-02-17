@@ -81,6 +81,7 @@
                     <template #actions="{item}">
                         <td class="py-2">
                             <CButton color="warning" size="sm" class="mr-2 text-white"
+                                     v-if="privilege_required(privilege, privileges.MODIFY)"
                                      :to="{name: 'user.edit', params: {id:item.id}}">
                                 <CIcon name="cil-pencil" /> Editar
                             </CButton>
@@ -89,6 +90,12 @@
                                      @click="set_delete(item)">
                                 <CIcon name="cil-trash" />
                                 Eliminar
+                            </CButton>
+                            <CButton color="success" size="sm" class="text-white"
+                                     v-if="!privilege_required(privilege, privileges.MODIFY) &&
+                                           !privilege_required(privilege, privileges.DELETE)"
+                                     :to="{name: 'user.detail', params: {id:item.id}}">
+                                <CIcon name="cil-file" /> Ver
                             </CButton>
                         </td>
                     </template>

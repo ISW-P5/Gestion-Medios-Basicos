@@ -18,6 +18,9 @@ export default {
             fields,
         }
     },
+    computed: {
+        ...mapGetters(['privilege_required'])
+    },
     methods: {
         add(f) {
             f.preventDefault();
@@ -53,7 +56,6 @@ export default {
         finish_delete() {
             this.confirm_delete = false;
         },
-        ...mapGetters(['privilege_required'])
     },
     created() {
         const title = 'Admin | ' + this.get_title() + ' ' + this.$options.panel_title;

@@ -44,6 +44,9 @@ export default {
             this.updatePerPage(per_page);
         },
     },
+    computed: {
+        ...mapGetters(['privilege_required'])
+    },
     methods: {
         // MetaData in Table (filter, page, per_page and delete alert)
         applyFilter(filter) {
@@ -108,7 +111,6 @@ export default {
             this.confirm_delete = false;
             this.delete_data = 0;
         },
-        ...mapGetters(['privilege_required'])
     },
     created() {
         if (this.$route.name === this.route) {

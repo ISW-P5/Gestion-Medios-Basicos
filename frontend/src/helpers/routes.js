@@ -56,7 +56,7 @@ const routes = [
                 path: 'movements/',
                 name: 'movement_ticket',
                 meta: {label: 'Vales de Movimiento'},
-                component: HelpPage,
+                component: ErrorPage,
                 children: [
                     {
                         path: 'add/',
@@ -82,7 +82,7 @@ const routes = [
                 path: 'requests/',
                 name: 'request_ticket',
                 meta: {label: 'Vales de Solicitud'},
-                component: HelpPage,
+                component: ErrorPage,
                 children: [
                     {
                         path: 'add/',
@@ -153,32 +153,6 @@ const routes = [
                         name: 'user.edit',
                         meta: {label: 'Editar'},
                         component: DetailUserPage
-                    },
-                ]
-            },
-            {
-                path: 'groups/',
-                name: 'group',
-                meta: {label: 'Grupos'},
-                component: HelpPage,
-                children: [
-                    {
-                        path: 'add/',
-                        name: 'group.add',
-                        meta: {label: 'Añadir Grupo'},
-                        component: HelpPage
-                    },
-                    {
-                        path: ':id/detail/',
-                        name: 'group.detail',
-                        meta: {label: 'Ver Grupo'},
-                        component: HelpPage
-                    },
-                    {
-                        path: ':id/edit/',
-                        name: 'group.edit',
-                        meta: {label: 'Editar Grupo'},
-                        component: HelpPage
                     },
                 ]
             },
