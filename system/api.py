@@ -27,12 +27,12 @@ class FilterViewSetMixin(viewsets.ModelViewSet):
 
 
 class UserViewSet(FilterViewSetMixin):
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def get_filter(self, queryset, value):
         return queryset.filter(Q(username__contains=value) | Q(first_name__contains=value) |
-                               Q(last_name__contains=value)).order_by('-date_joined')
+                               Q(last_name__contains=value) | Q(email__contains=value)).order_by('-date_joined')
 
 
 class BasicMediumExpedientViewSet(FilterViewSetMixin):

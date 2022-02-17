@@ -8,6 +8,8 @@ import BasicMediumPage from "../views/basic_medium/BasicMediumPage";
 import DetailBasicMediumPage from "../views/basic_medium/DetailBasicMediumPage";
 import ResponsibilityCertificatePage from "../views/responsibility_certificate/ResponsibilityCertificatePage";
 import DetailResponsibilityCertificatePage from "../views/responsibility_certificate/DetailResponsibilityCertificatePage";
+import UserPage from "../views/users/UserPage";
+import DetailUserPage from "../views/users/DetailUserPage";
 
 Vue.use(VueRouter);
 
@@ -33,19 +35,19 @@ const routes = [
                     {
                         path: 'add/',
                         name: 'basic_medium.add',
-                        meta: {label: 'Añadir Medio Basico'},
+                        meta: {label: 'Añadir'},
                         component: DetailBasicMediumPage
                     },
                     {
                         path: ':id/detail/',
                         name: 'basic_medium.detail',
-                        meta: {label: 'Ver Medio Basico'},
+                        meta: {label: 'Ver'},
                         component: DetailBasicMediumPage
                     },
                     {
                         path: ':id/edit/',
                         name: 'basic_medium.edit',
-                        meta: {label: 'Editar Medio Basico'},
+                        meta: {label: 'Editar'},
                         component: DetailBasicMediumPage
                     },
                 ]
@@ -59,19 +61,19 @@ const routes = [
                     {
                         path: 'add/',
                         name: 'movement_ticket.add',
-                        meta: {label: 'Añadir Vale de Movimiento'},
+                        meta: {label: 'Añadir'},
                         component: HelpPage
                     },
                     {
                         path: ':id/detail/',
                         name: 'movement_ticket.detail',
-                        meta: {label: 'Ver Vale de Movimiento'},
+                        meta: {label: 'Ver'},
                         component: HelpPage
                     },
                     {
                         path: ':id/edit/',
                         name: 'movement_ticket.edit',
-                        meta: {label: 'Editar Vale de Movimiento'},
+                        meta: {label: 'Editar'},
                         component: HelpPage
                     },
                 ]
@@ -85,19 +87,19 @@ const routes = [
                     {
                         path: 'add/',
                         name: 'request_ticket.add',
-                        meta: {label: 'Añadir Vale de Solicitud'},
+                        meta: {label: 'Añadir'},
                         component: HelpPage
                     },
                     {
                         path: ':id/detail/',
                         name: 'request_ticket.detail',
-                        meta: {label: 'Ver Vale de Solicitud'},
+                        meta: {label: 'Ver'},
                         component: HelpPage
                     },
                     {
                         path: ':id/edit/',
                         name: 'request_ticket.edit',
-                        meta: {label: 'Editar Vale de Solicitud'},
+                        meta: {label: 'Editar'},
                         component: HelpPage
                     },
                 ]
@@ -111,19 +113,19 @@ const routes = [
                     {
                         path: 'add/',
                         name: 'responsibility_certificate.add',
-                        meta: {label: 'Añadir Acta de Responsabilidad'},
+                        meta: {label: 'Añadir'},
                         component: DetailResponsibilityCertificatePage
                     },
                     {
                         path: ':id/detail/',
                         name: 'responsibility_certificate.detail',
-                        meta: {label: 'Ver Acta de Responsabilidad'},
+                        meta: {label: 'Ver'},
                         component: DetailResponsibilityCertificatePage
                     },
                     {
                         path: ':id/edit/',
                         name: 'responsibility_certificate.edit',
-                        meta: {label: 'Editar Acta de Responsabilidad'},
+                        meta: {label: 'Editar'},
                         component: DetailResponsibilityCertificatePage
                     },
                 ]
@@ -132,25 +134,25 @@ const routes = [
                 path: 'users/',
                 name: 'user',
                 meta: {label: 'Usuarios'},
-                component: HelpPage,
+                component: UserPage,
                 children: [
                     {
                         path: 'add/',
                         name: 'user.add',
-                        meta: {label: 'Añadir Usuario'},
-                        component: HelpPage
+                        meta: {label: 'Añadir'},
+                        component: DetailUserPage
                     },
                     {
                         path: ':id/detail/',
                         name: 'user.detail',
-                        meta: {label: 'Ver Usuario'},
-                        component: HelpPage
+                        meta: {label: 'Ver'},
+                        component: DetailUserPage
                     },
                     {
                         path: ':id/edit/',
                         name: 'user.edit',
-                        meta: {label: 'Editar Usuario'},
-                        component: HelpPage
+                        meta: {label: 'Editar'},
+                        component: DetailUserPage
                     },
                 ]
             },

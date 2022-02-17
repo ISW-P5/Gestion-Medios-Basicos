@@ -3,7 +3,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from rest_framework import routers
 
 from .views import (index, admin, avatar, login_api, user_data_api, csrf_api, basic_medium_metadata,
-                    responsible_metadata, basic_medium_without_certificate_metadata)
+                    responsible_metadata, basic_medium_without_certificate_metadata, roles_metadata)
 from .api import (UserViewSet, BasicMediumExpedientViewSet, RequestTicketViewSet,
                   MovementTicketViewSet, ResponsibilityCertificateViewSet)
 
@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/csrf/', csrf_api, name="csrf_api"),
     path('api/user/', user_data_api, name="user_data"),
     path('api/responsible/', responsible_metadata, name='responsible_list'),
+    path('api/roles/', roles_metadata, name='roles_list'),
     path('api/mediums/', basic_medium_metadata, name='basic_medium_list'),
     path('api/mediums_certificate/', basic_medium_without_certificate_metadata, name='basic_medium_certificate_list'),
     path('api/', include(router.urls)),

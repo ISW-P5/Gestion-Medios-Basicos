@@ -10,11 +10,12 @@ export default {
     equalLength: (n, value) => value.length === n,
     maxLength: (n, value) => value.length > n,
     regex: (regex, value) => regex.test(value),
-    email: (email) => email.match(
+    isMail: (email) => email.match(
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     ),
     onlyNumbers(value) { return this.regex(/^\d+$/, value); },
     onlyLetters(value) { return this.regex(/^[a-zA-Z ]+$/, value); },
     onlyLettersAndNumbers(value) { return this.regex(/^[a-zA-Z0-9 ]+$/i, value); },
+    onlyLettersAndNumbersWithoutSpace(value) { return this.regex(/^[a-zA-Z0-9]+$/i, value); },
     inventoryNumberIsValid(value) { return this.regex(/\b[A-Za-z]{2}[0-9]{7}\b/, value); },
 };

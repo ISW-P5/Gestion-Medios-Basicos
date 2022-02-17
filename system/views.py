@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 from django.shortcuts import redirect, render
 from django.http import JsonResponse, HttpResponse
 
@@ -86,8 +86,7 @@ def basic_medium_without_certificate_metadata(request):
             {
                 'value': r.id,
                 'label': r.inventory_number + ' - ' + r.name
-            } for r in
-            BasicMediumExpedient.objects.filter(is_enable=True, responsibilitycertificate__isnull=True)
+            } for r in BasicMediumExpedient.objects.filter(is_enable=True, responsibilitycertificate__isnull=True)
         ] + ([
              {
                  'value': uid.id,
@@ -107,3 +106,46 @@ def basic_medium_metadata(request):
             } for r in BasicMediumExpedient.objects.filter(is_enable=True)
         ]
     })
+
+
+@login_required
+@permission_required('auth.add_user')
+def roles_metadata(request):
+    return JsonResponse({
+        'groups': [
+            {
+                'value': r.id,
+                'label': r.name
+            } for r in Group.objects.all()
+        ]
+    })
+
+
+def testing(request):
+    # Obtener
+    filtrar_usuarios = User.objects.filter(is_staff=True)
+    todos_usuarios = User.objects.all()
+    # Voy a eliminar Pepe
+    try:
+        # Editar
+        usuario = User.objects.get(username='Pepe')
+        usuario.edad = 15
+        usuario.save()
+
+        usuario = authenticate(request, {
+            'username': 'mackey',
+            'password': 'hola'
+        })
+
+        # Eliminar
+        usuario.delete()
+        return "Pepe se elimino"
+    except User.DoesNotExist:
+        return "Pepe noe existe"
+
+    # Crear
+    usuario = User(username='Pepe', first_name='Pepe', last_name='Tono')
+    usuario.edad = 15
+    usuario.save()
+
+    return HttpResponse(content='<h1>Hola</')

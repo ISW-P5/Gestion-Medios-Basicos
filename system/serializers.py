@@ -24,6 +24,7 @@ class PageNumberSizePagination(PageNumberPagination):
 
 class SimpleUserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField(label='Rol', allow_null=True)
+    role_id = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -33,12 +34,16 @@ class SimpleUserSerializer(serializers.ModelSerializer):
         group = obj.groups.first()
         return group.name if group else None
 
+    def get_role_id(self, obj):
+        group = obj.groups.first()
+        return group.id if group else 0
+
 
 class UserSerializer(SimpleUserSerializer):
     permissions = serializers.SerializerMethodField(label='Permisos', default={})
 
     class Meta(SimpleUserSerializer.Meta):
-        fields = ('url', 'username', 'password', 'email', 'first_name', 'last_name', 'is_staff', 'role', 'permissions')
+        fields = ('url', 'id', 'username', 'password', 'email', 'first_name', 'last_name', 'is_staff', 'role', 'role_id', 'permissions')
 
         # These fields are displayed but not editable and have to be a part of 'fields' tuple
         read_only_fields = ('date_joined',)
@@ -71,7 +76,6 @@ class UserSerializer(SimpleUserSerializer):
 
 
 class SimpleBasicMediumExpedientSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = BasicMediumExpedient
         fields = ('url', 'id', 'name', 'inventory_number', 'responsible', 'location', 'is_enable')

@@ -199,6 +199,15 @@ const Service = {
                 vm.$store.commit('removeLoading');
             });
     },
+    getList_Roles(vm) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/roles/'),
+            function (sender, response) {
+                vm.groups = response.data.groups;
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
 
     // List, Detail, Remove, Add and Edit Basic Medium
     getList_BasicMedium(vm) {
@@ -363,8 +372,85 @@ const Service = {
     },
 
     // List, Detail, Remove, Add and Edit User
+    getList_User(vm) {
+        this._create_request(vm, axios.get('/api/users/', {
+                params: {
+                    page: vm.page,
+                    per_page: vm.per_page,
+                    filter: vm.appliedFilter,
+                    ordering: vm.ordering,
+                }
+            }), function (sender, response) {
+                vm.data = response.data;
+                vm.loading = false;
 
-    // List, Detail, Remove, Add and Edit Group
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    detail_User(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/users/' + String(id) + '/'),
+            function (sender, response) {
+                vm.id = response.data.id;
+                vm.username = response.data.username;
+                vm.email = response.data.email;
+                vm.first_name = response.data.first_name;
+                vm.last_name = response.data.last_name;
+                vm.group_id = response.data.role_id;
+                vm.group_name = response.data.role;
+                vm.is_staff = response.data.is_staff;
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    remove_User(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.delete('/api/users/' + String(id) + '/'),
+            function (sender, response) {
+                // Remove from list
+                vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                vm.finish_delete();
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            }, false);
+    },
+    add_User(vm) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.post('/api/users/', {
+                identity_card: vm.identity_card,
+                basic_medium: vm.basic_medium_id,
+                responsible: vm.responsible_id,
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect to List Warnings
+                vm.$router.push({name: 'responsibility_certificate'}).then(r => {});
+            });
+    },
+    edit_User(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.put('/api/users/' + String(id) + '/', {
+                identity_card: vm.identity_card,
+                basic_medium: vm.basic_medium_id,
+                responsible: vm.responsible_id,
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect to List Warnings
+                vm.$router.push({name: 'responsibility_certificate.detail', params: {id:id}}).then(r => {});
+            });
+    },
+
+    // List, Detail, Remove, Add and Edit Movement Ticket
+
+    // List, Detail, Remove, Add and Edit Request Ticket
 };
 
 export default Service;

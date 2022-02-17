@@ -48,8 +48,8 @@ export default {
         ...mapGetters(['privilege_required'])
     },
     created() {
-        const title = 'Admin | ' + this.get_title() + ' Medio Basico';
-        const panel_title = this.get_title() + ' Medio Basico';
+        const title = 'Admin | ' + this.get_title() + ' ' + this.$options.panel_title;
+        const panel_title = this.get_title() + ' ' + this.$options.panel_title;
         if (title) {
             document.title = title;
             this.$store.state.panelTitle = panel_title || 'Panel Administrativo';
