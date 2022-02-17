@@ -57,6 +57,7 @@ class MovementTicket(models.Model):
 
 
 class ResponsibilityCertificate(models.Model):
+    """Acta de Responsabilidad del Medio Basico"""
     responsible = models.ForeignKey(User, null=False, blank=False, on_delete=models.CASCADE, verbose_name="Responsable")
     identity_card = models.CharField(max_length=20, null=False, blank=False, verbose_name='Carnet de Identidad')
     basic_medium = models.ForeignKey(BasicMediumExpedient, on_delete=models.CASCADE, null=False, blank=False,

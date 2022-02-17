@@ -177,11 +177,11 @@ const Service = {
                 vm.$store.commit('removeLoading');
             });
     },
-    getList_MediumsCertificate(vm, excluded = -1) {
+    getList_MediumsCertificate(vm, included = -1) {
         vm.$store.commit('setLoading');
         this._create_request(vm, axios.get('/api/mediums_certificate/', {
                 params: {
-                    excluded_id: excluded
+                    included_id: included
                 }
             }),
             function (sender, response) {

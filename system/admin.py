@@ -3,10 +3,10 @@ from django.contrib import admin
 from .models import BasicMediumExpedient, MovementTicket, RequestTicket, ResponsibilityCertificate
 
 
-# Register your models here.
+# Renombrar titulo del Panel Administrativo de Django
 admin.site.site_header = 'Sistema de Gestion de Medios Basicos'
-# TODO: Create basic Admin Django
 
+# Registrar Modelos sin especificar el AdminModel
 admin.site.register(BasicMediumExpedient)
 admin.site.register(MovementTicket)
 admin.site.register(RequestTicket)

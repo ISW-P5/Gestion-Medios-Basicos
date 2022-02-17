@@ -8,6 +8,7 @@ from .api import (UserViewSet, BasicMediumExpedientViewSet, RequestTicketViewSet
                   MovementTicketViewSet, ResponsibilityCertificateViewSet)
 
 
+# Incluyo el enrutador de los ViewSet declarados para el API
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'basic_medium', BasicMediumExpedientViewSet)
@@ -16,14 +17,15 @@ router.register(r'movement_ticket', MovementTicketViewSet)
 router.register(r'responsibility_certificate', ResponsibilityCertificateViewSet)
 
 urlpatterns = [
+    # Default System urls
     path('', index, name='index'),
     path('admin/', admin, name='dashboard'),
 
-    # Authentication
+    # Authentication urls
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
 
-    # API
+    # API urls
     path('api/login/', login_api, name='api_login'),
     path('api/avatar/', avatar, name="avatar"),
     path('api/csrf/', csrf_api, name="csrf_api"),

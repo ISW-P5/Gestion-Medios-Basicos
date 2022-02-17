@@ -11,9 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-
 from django.conf.global_settings import LOGIN_URL
-
 from system.libs.database import DATABASES_CONFIG
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,7 +30,6 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     # Django Jet
     'jet.dashboard',
@@ -56,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # Middleware de seguridad para el sistema (X-Frame, CSRF, Cors and others)
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
@@ -121,11 +119,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Sistema de autenticacion a utilizar
 AUTHENTICATION_BACKENDS = [
     'system.managers.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# Login configuration
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/admin'
 LOGOUT_REDIRECT_URL = '/'
