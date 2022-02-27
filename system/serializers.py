@@ -172,7 +172,7 @@ class MovementTicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MovementTicket
-        fields = ('url', 'basic_medium', 'medium', 'requester', 'owner', 'actual_location', 'new_location')
+        fields = ('url', 'id', 'basic_medium', 'medium', 'requester', 'owner', 'actual_location', 'new_location')
         extra_kwargs = {'requester': {'write_only': True}, 'basic_medium': {'write_only': True}}
 
     def create(self, validated_data):

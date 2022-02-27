@@ -467,6 +467,85 @@ const Service = {
     },
 
     // List, Detail, Remove, Add and Edit Movement Ticket
+    getList_MovementTicket(vm) {
+        this._create_request(vm, axios.get('/api/movement_ticket/', {
+                params: {
+                    page: vm.page,
+                    per_page: vm.per_page,
+                    filter: vm.appliedFilter,
+                    ordering: vm.ordering,
+                }
+            }), function (sender, response) {
+                vm.data = response.data;
+                vm.loading = false;
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    detail_MovementTicket(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/movement_ticket/' + String(id) + '/'),
+            function (sender, response) {
+                vm.id = response.data.id;
+                vm.basic_medium_id = response.data.medium.id;
+                vm.basic_medium_name = response.data.medium.name;
+                vm.actual_location = response.data.actual_location;
+                vm.new_location = response.data.new_location;
+                vm.requester_id = response.data.owner.id;
+                let value = response.data.owner.first_name + ' ' + response.data.owner.last_name;
+                vm.requester_name = (value.length === 0 || !value.trim()) ? response.data.owner.username : value;
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    remove_MovementTicket(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.delete('/api/movement_ticket/' + String(id) + '/'),
+            function (sender, response) {
+                // Remove from list
+                if (vm.data) {
+                    vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                }
+                vm.finish_delete();
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            }, false);
+    },
+    add_MovementTicket(vm) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.post('/api/movement_ticket/', {
+                basic_medium: vm.basic_medium_id,
+                requester: vm.requester_id,
+                actual_location: vm.actual_location,
+                new_location: vm.new_location,
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect
+                vm.$router.push({name: vm.route}).then(r => {});
+            });
+    },
+    edit_MovementTicket(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.put('/api/movement_ticket/' + String(id) + '/', {
+                basic_medium: vm.basic_medium_id,
+                requester: vm.requester_id,
+                actual_location: vm.actual_location,
+                new_location: vm.new_location,
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect
+                vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});
+            });
+    },
 
     // List, Detail, Remove, Add and Edit Request Ticket
     getList_RequestTicket(vm) {

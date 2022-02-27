@@ -12,6 +12,8 @@ import UserPage from "../views/users/UserPage";
 import DetailUserPage from "../views/users/DetailUserPage";
 import RequestTicketPage from "../views/request_ticket/RequestTicketPage";
 import DetailRequestTicketPage from "../views/request_ticket/DetailRequestTicketPage";
+import MovementTicketPage from "../views/movement_ticket/MovementTicketPage";
+import DetailMovementTicketPage from "../views/movement_ticket/DetailMovementTicketPage";
 
 Vue.use(VueRouter);
 
@@ -58,25 +60,25 @@ const routes = [
                 path: 'movements/',
                 name: 'movement_ticket',
                 meta: {label: 'Vales de Movimiento'},
-                component: ErrorPage,
+                component: MovementTicketPage,
                 children: [
                     {
                         path: 'add/',
                         name: 'movement_ticket.add',
                         meta: {label: 'Añadir'},
-                        component: HelpPage
+                        component: DetailMovementTicketPage
                     },
                     {
                         path: ':id/detail/',
                         name: 'movement_ticket.detail',
                         meta: {label: 'Ver'},
-                        component: HelpPage
+                        component: DetailMovementTicketPage
                     },
                     {
                         path: ':id/edit/',
                         name: 'movement_ticket.edit',
                         meta: {label: 'Editar'},
-                        component: HelpPage
+                        component: DetailMovementTicketPage
                     },
                 ]
             },

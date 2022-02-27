@@ -2,14 +2,14 @@
     <CCard v-if="this.$route.name === (route + '.add') || this.$route.name === (route + '.edit')">
         <CCardHeader v-if="this.$route.name === (route + '.add')">
             <CIcon name="cil-plus"/>
-            Añadir Vale de Solicitud
+            Añadir Vale de Movimiento
         </CCardHeader>
         <CCardHeader v-else>
-            <CIcon name="cil-file"/>
-            Editar Vale de Solicitud
+            <CIcon name="cil-library"/>
+            Editar Vale de Movimiento
             <div class="card-header-actions" v-if="privilege_required(privilege, privileges.MODIFY)">
                 <CButton color="danger" size="sm"
-                         :to="{name: 'request_ticket.detail', params: {id:$route.params.id}}">
+                         :to="{name: 'movement_ticket.detail', params: {id:$route.params.id}}">
                     <CIcon name="cil-ban" /> Cancelar
                 </CButton>
             </div>
@@ -37,27 +37,23 @@
                     invalid-feedback="Debe seleccionarse un Solicitante."
                   />
                 <CInput
-                    label="Departamento *"
-                    placeholder="Departamento"
+                    label="Ubicacion Actual *"
+                    placeholder="Ubicacion Actual"
                     :horizontal="horizontal"
                     required
-                    :value.sync="departament"
-                    :isValid="is_valid_departament"
+                    :value.sync="actual_location"
+                    :isValid="is_valid_actual_location"
                     invalid-feedback="No puede estar vacio."
                   />
-                <CFormGroup class="form-group form-row"
-                            v-if="this.$store.state.user.is_superuser || !privilege_required(privilege, privileges.OWN)">
-                    <template #label>
-                        <label class="col-form-label col-md-2">¿Fue aceptado?</label>
-                    </template>
-                    <template #input>
-                        <CSwitch
-                            color="success"
-                            :checked.sync="accepted"
-                            shape="pill"
-                        />
-                    </template>
-                </CFormGroup>
+                <CInput
+                    label="Ubicacion Nueva *"
+                    placeholder="Ubicacion Nueva"
+                    :horizontal="horizontal"
+                    required
+                    :value.sync="new_location"
+                    :isValid="is_valid_new_location"
+                    invalid-feedback="No puede estar vacio."
+                  />
                 <CButton type="submit" @click="add" class="mr-1" color="success"
                          v-if="this.$route.name === (route + '.add') && privilege_required(privilege, privileges.ADD)">
                     <CIcon name="cil-check-circle"/> Enviar
@@ -72,11 +68,11 @@
     </CCard>
     <CCard v-else-if="this.$route.name === (route + '.detail')">
         <CCardHeader>
-            <CIcon name="cil-file"/>
-            Ver Vale de Solicitud ({{ basic_medium_name + ' - ' + requester_name }})
+            <CIcon name="cil-library"/>
+            Ver Vale de Movimiento ({{ basic_medium_name + ' - ' + requester_name }})
             <div class="card-header-actions" v-if="privilege_required(privilege, privileges.MODIFY)">
                 <CButton color="warning" size="sm" class="text-white mr-2"
-                         :to="{name: 'request_ticket.edit', params: {id:$route.params.id}}">
+                         :to="{name: 'movement_ticket.edit', params: {id:$route.params.id}}">
                     <CIcon name="cil-pencil" /> Editar
                 </CButton>
                 <CButton color="danger" size="sm"
@@ -113,7 +109,7 @@
         <!-- Delete Confirmation Modal -->
         <CModal :centered="true" :scrollable="false" title="Eliminar!" size="sm" color="warning"
                 :show.sync="confirm_delete">
-            ¿Estas seguro de que quieres eliminar el vale de solicitud
+            ¿Estas seguro de que quieres eliminar el vale de movimiento
             "({{ basic_medium_name + ', ' + requester_name }})"?
             <template #footer>
                 <CButton color="default" size="sm" @click="finish_delete()">Cancelar</CButton>
@@ -128,25 +124,25 @@ import detail_table from "../../mixins/detailtable";
 import validator from "../../helpers/validator";
 
 export default {
-    name: "DetailRequestTicketPage",
-    title: 'Admin | Vale de Solicitud',
-    panel_title: 'Vale de Solicitud',
+    name: "DetailMovementTicketPage",
+    title: 'Admin | Vale de Movimiento',
+    panel_title: 'Vale de Movimiento',
     mixins: [detail_table],
     data() {
         return {
             // Static Data
-            route: 'request_ticket',
-            privilege: 'requestticket',
+            route: 'movement_ticket',
+            privilege: 'movementticket',
             // Values
             id: '',
             basic_medium_id: 0,
             basic_medium_name: '',
             basic_medium: [],
-            departament: '',
+            actual_location: '',
+            new_location: '',
             requester_id: 0,
             requester_name: '',
             responsible: [],
-            accepted: false,
         }
     },
     computed: {
@@ -155,8 +151,8 @@ export default {
                 {'p': 'ID', 'v': this.id},
                 {'p': 'Medio Basico', 'v': this.basic_medium_name},
                 {'p': 'Solicitante', 'v': this.requester_name},
-                {'p': 'Departamento', 'v': this.departament},
-                {'p': 'Esta Aceptado el Vale', 'v': this.accepted},
+                {'p': 'Ubicacion Actual', 'v': this.actual_location},
+                {'p': 'Ubicacion Nueva', 'v': this.new_location},
             ];
         }
     },
@@ -169,9 +165,13 @@ export default {
             return (!validator.isNull(this.requester_id) && validator.isNumber(this.requester_id) &&
                 this.requester_id > 0);
         },
-        is_valid_departament() {
-            return (!validator.isNull(this.departament) && !validator.isEmpty(this.departament) &&
-                validator.onlyLettersAndNumbers(this.departament));
+        is_valid_actual_location() {
+            return (!validator.isNull(this.actual_location) && !validator.isEmpty(this.actual_location) &&
+                validator.onlyLettersAndNumbers(this.actual_location));
+        },
+        is_valid_new_location() {
+            return (!validator.isNull(this.new_location) && !validator.isEmpty(this.new_location) &&
+                validator.onlyLettersAndNumbers(this.new_location));
         },
         is_valid() {
             return [
@@ -181,8 +181,11 @@ export default {
                 // Validate requester
                 this.is_valid_requester_id(),
 
-                // Validate departament
-                this.is_valid_departament(),
+                // Validate actual location
+                this.is_valid_actual_location(),
+
+                // Validate new location
+                this.is_valid_new_location(),
             ].every((v) => v);
         },
         reset() {
@@ -190,26 +193,20 @@ export default {
             this.basic_medium_id = 0;
             this.basic_medium_name = '';
             this.basic_medium = [];
-            this.departament = '';
+            this.actual_location = '';
+            this.new_location = '';
             this.requester_id = 0;
             this.requester_name = '';
             this.responsible = [];
-            this.accepted = false;
         },
         add_queryset() {
-            if (!(this.$store.state.user.is_superuser || !this.privilege_required(this.privilege, this.privileges.OWN))) {
-                this.accepted = false;
-            }
-            this.$services.add_RequestTicket(this);
+            this.$services.add_MovementTicket(this);
         },
         edit_queryset() {
-            if (!(this.$store.state.user.is_superuser || !this.privilege_required(this.privilege, this.privileges.OWN))) {
-                this.accepted = false;
-            }
-            this.$services.edit_RequestTicket(this, this.$route.params.id);
+            this.$services.edit_MovementTicket(this, this.$route.params.id);
         },
         get_queryset() {
-            this.$services.detail_RequestTicket(this, this.$route.params.id);
+            this.$services.detail_MovementTicket(this, this.$route.params.id);
         },
         metadata_queryset() {
             this.$services.getList_Mediums(this);
@@ -220,7 +217,7 @@ export default {
             }
         },
         remove() {
-            this.$services.remove_RequestTicket(this, this.id);
+            this.$services.remove_MovementTicket(this, this.id);
 
             // Redirect
             this.$router.push({name: this.route});
