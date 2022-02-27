@@ -20,9 +20,12 @@
 </template>
 
 <script>
+import loading from "../../mixins/loading";
+
 export default {
     name: 'ErrorPage',
     title: 'Admin | Error',
+    mixins: [loading],
     props: {
         error_type: {
             type: String,
@@ -88,9 +91,6 @@ export default {
         if (this.$route.name === 'error.fatal') {
             this.$services.getCurrentUser(this);
         }
-    },
-    destroyed() {
-        this.$services.destroyRequest();
     }
 };
 </script>

@@ -11,32 +11,65 @@ export function getSidebar(permission) {
         }
     ];
     // Access
-    if (permission[0] > 0) {
+    if (permission) {
         addElementToSidebar(sidebar, {
             _name: 'CSidebarNavItem',
-            name: 'Panel Principal',
+            name: 'Inicio',
             to: '/',
-            icon: 'cil-speedometer'
+            icon: 'cil-home'
         });
-        // Console
-        if (permission[1] > 0) {
+
+        // Medio Basico
+        if (permission.basicmediumexpedient && permission.basicmediumexpedient.includes(0)) {
             addElementToSidebar(sidebar, {
                 _name: 'CSidebarNavItem',
-                name: 'Consola',
-                to: {name: 'console'},
-                icon: 'cil-terminal'
+                name: 'Medios Basicos',
+                to: {name: 'basic_medium'},
+                icon: 'cil-book'
             });
         }
-        // Config
-        if (permission[2] > 0) {
+
+        // Vale de Movimiento
+        if (permission.movementticket && permission.movementticket.includes(0)) {
             addElementToSidebar(sidebar, {
                 _name: 'CSidebarNavItem',
-                name: 'Configuración',
-                to: {name: 'config'},
-                icon: 'cil-settings'
+                name: 'Vales de Movimiento',
+                to: {name: 'movement_ticket'},
+                icon: 'cil-library'
+            });
+        }
+
+        // Vale de Solicitud
+        if (permission.requestticket && permission.requestticket.includes(0)) {
+            addElementToSidebar(sidebar, {
+                _name: 'CSidebarNavItem',
+                name: 'Vales de Solicitud',
+                to: {name: 'request_ticket'},
+                icon: 'cil-file'
+            });
+        }
+
+        // Acta de Responsabilidad
+        if (permission.responsibilitycertificate && permission.responsibilitycertificate.includes(0)) {
+            addElementToSidebar(sidebar, {
+                _name: 'CSidebarNavItem',
+                name: 'Actas de Responsabilidad',
+                to: {name: 'responsibility_certificate'},
+                icon: 'cil-address-book'
+            });
+        }
+
+        // Usuario
+        if (permission.user && permission.user.includes(0)) {
+            addElementToSidebar(sidebar, {
+                _name: 'CSidebarNavItem',
+                name: 'Usuarios',
+                to: {name: 'user'},
+                icon: 'cil-user'
             });
         }
     }
+
     // Documentation and Develop
     addElementToSidebar(sidebar, {
         _name: 'CSidebarNavTitle',

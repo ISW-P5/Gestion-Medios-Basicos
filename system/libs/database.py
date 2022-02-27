@@ -1,5 +1,6 @@
 import os
 
+# La configuracion de la base de datos
 DATABASES_CONFIG = {
     'sqlite3': {
         'ENGINE': 'django.db.backends.sqlite3',

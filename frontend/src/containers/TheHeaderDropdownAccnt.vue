@@ -8,7 +8,7 @@
         <template #toggler>
             <CHeaderNavLink>
                 <div class="c-avatar">
-                    <img :src="'/avatar?u=' + $store.state.user.username + '&width=64&height=64&font-size=36'"
+                    <img :src="'/api/avatar?u=' + $store.state.user.username + '&width=64&height=64&font-size=36'"
                          class="c-avatar-img"  alt="User Avatar"/>
                 </div>
             </CHeaderNavLink>
@@ -17,8 +17,7 @@
             <CIcon name="cil-user"></CIcon>
             <strong>{{ $store.state.user.username }}</strong>
         </CDropdownHeader>
-        <!-- #TODO: Add User Profile -->
-        <CDropdownItem href="#/user/id">
+        <CDropdownItem :href="'#/users/' + $store.state.user.id + '/detail/'">
             <CIcon name="cil-user"/>
             Perfil de Usuario
         </CDropdownItem>

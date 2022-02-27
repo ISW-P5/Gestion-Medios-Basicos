@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from django.conf.global_settings import LOGIN_URL
 from system.libs.database import DATABASES_CONFIG
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,7 +30,6 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     # Django Jet
     'jet.dashboard',
@@ -42,14 +42,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Django Rest Framework
+    'rest_framework',
+
+    # Django Cross-Origin Resource Sharing (CORS)
+    'corsheaders',
+
     # System App
     'system.apps.SystemConfig'
 ]
 
 MIDDLEWARE = [
+    # Middleware de seguridad para el sistema (X-Frame, CSRF, Cors and others)
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -81,6 +89,7 @@ WSGI_APPLICATION = 'kernel.wsgi.application'
 
 CACHE_TTL = 60 * 15
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -110,12 +119,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Sistema de autenticacion a utilizar
 AUTHENTICATION_BACKENDS = [
     'system.managers.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# Login configuration
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/admin'
+LOGOUT_REDIRECT_URL = '/'
+
+
+# Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'system.serializers.PageNumberSizePagination',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.DjangoModelPermissions'
+    ),
+    'PAGE_SIZE': 50
+}
 
 
 # Internationalization
@@ -134,7 +162,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = str(BASE_DIR / 'assets')
-STATICFILES_DIRS = (str(BASE_DIR / 'static'), )
+STATICFILES_DIRS = (
+    str(BASE_DIR / 'static'),
+)
 
 MEDIA_ROOT = str(BASE_DIR / 'media')
 MEDIA_URL = '/media/'

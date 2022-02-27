@@ -7,7 +7,12 @@
                 <main class="c-main">
                     <CContainer fluid>
                         <transition name="fade" mode="out-in">
-                            <router-view :key="$route.path"></router-view>
+                            <div>
+                                <router-view :key="$route.path"></router-view>
+                                <CElementCover v-if="$store.state.loading" :opacity="0.8">
+                                    <h1 class="d-inline">Cargando... </h1><CSpinner size="5xl" color="success"/>
+                                </CElementCover>
+                            </div>
                         </transition>
                     </CContainer>
                 </main>
