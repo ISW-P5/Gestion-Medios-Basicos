@@ -102,7 +102,7 @@
         <CModal :centered="true" :scrollable="false" title="Eliminar!" size="sm" color="warning"
                 :show.sync="confirm_delete" v-if="delete_data">
             ¿Estas seguro de que quieres eliminar el acta de responsabilidad
-            "({{ delete_data.medium + ', ' + delete_data.owner }})"?
+            "({{ delete_data.medium.name + ', ' + delete_data.responsible }})"?
             <template #footer>
                 <CButton color="default" size="sm" @click="finish_delete()">Cancelar</CButton>
                 <CButton color="danger" size="sm" @click="remove()">¡Eliminar!</CButton>
