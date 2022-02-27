@@ -57,13 +57,13 @@
                     </template>
 
                     <!-- Table Custom Fields -->
-                    <template #medium="{item}">
+                    <template #basic_medium="{item}">
                         <td v-if="privilege_required(privilege, privileges.VIEW)">
                             <CLink :to="{name: 'responsibility_certificate.detail', params: {id:item.id}}">
-                                {{ item.medium }}
+                                {{ item.basic_medium }}
                             </CLink>
                         </td>
-                        <td v-else>{{ item.medium }}</td>
+                        <td v-else>{{ item.basic_medium }}</td>
                     </template>
                     <template #datetime="{item}">
                         <td>
@@ -120,8 +120,8 @@ import table_list from "../../mixins/tablelist";
 
 const fields = [
     { key: 'id', label: '#', _style: 'width:1%' },
-    { key: 'medium', label: 'Medio Basico' },
-    { key: 'owner', label: 'Responsable', sorter: false },
+    { key: 'basic_medium', label: 'Medio Basico' },
+    { key: 'responsible', label: 'Responsable' },
     { key: 'identity_card', label: 'Carnet de Identidad' },
     { key: 'datetime', label: 'Fecha', filter: false },
     { key: 'actions', label: 'Acciones', sorter: false, filter: false }
@@ -146,11 +146,9 @@ export default {
             let list = [];
             this.data.items.forEach((value) => {
                 list.push({
-                    id: value.id,
-                    medium: value.medium.name + ' - ' + value.medium.inventory_number,
-                    owner: this.get_full_name(value),
-                    identity_card: value.identity_card,
-                    datetime: value.datetime,
+                    basic_medium: value.medium.name + ' - ' + value.medium.inventory_number,
+                    responsible: this.get_full_name(value),
+                    ...value
                 });
             });
             return list;

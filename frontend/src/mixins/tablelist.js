@@ -113,7 +113,10 @@ export default {
         },
     },
     created() {
-        if (this.$route.name === this.route) {
+        // Check permissions
+        if (!this.privilege_required(this.privilege, this.privileges.VIEW)) {
+            this.$router.push({name: 'dashboard'}).then(r => {});
+        } else if (this.$route.name === this.route) {
             // Set page by route query
             this.per_page = this.$route.query.per_page || 50;
             this.page = this.$route.query.page || 1;

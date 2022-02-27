@@ -10,6 +10,8 @@ import ResponsibilityCertificatePage from "../views/responsibility_certificate/R
 import DetailResponsibilityCertificatePage from "../views/responsibility_certificate/DetailResponsibilityCertificatePage";
 import UserPage from "../views/users/UserPage";
 import DetailUserPage from "../views/users/DetailUserPage";
+import RequestTicketPage from "../views/request_ticket/RequestTicketPage";
+import DetailRequestTicketPage from "../views/request_ticket/DetailRequestTicketPage";
 
 Vue.use(VueRouter);
 
@@ -82,25 +84,25 @@ const routes = [
                 path: 'requests/',
                 name: 'request_ticket',
                 meta: {label: 'Vales de Solicitud'},
-                component: ErrorPage,
+                component: RequestTicketPage,
                 children: [
                     {
                         path: 'add/',
                         name: 'request_ticket.add',
                         meta: {label: 'Añadir'},
-                        component: HelpPage
+                        component: DetailRequestTicketPage
                     },
                     {
                         path: ':id/detail/',
                         name: 'request_ticket.detail',
                         meta: {label: 'Ver'},
-                        component: HelpPage
+                        component: DetailRequestTicketPage
                     },
                     {
                         path: ':id/edit/',
                         name: 'request_ticket.edit',
                         meta: {label: 'Editar'},
-                        component: HelpPage
+                        component: DetailRequestTicketPage
                     },
                 ]
             },

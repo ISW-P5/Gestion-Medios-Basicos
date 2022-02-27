@@ -14,7 +14,8 @@ const state = {
     user: {
         id: '0',
         username: 'Unknown',
-        permissions: []
+        permissions: [],
+        is_superuser: false,
     }
 };
 
@@ -50,7 +51,7 @@ const mutations = {
 
 const getters = {
     privilege_required: (state) => (privilege, power = 0) => {
-        return state.user.permissions[privilege].includes(power);
+        return (state.user.permissions[privilege]) ? state.user.permissions[privilege].includes(power) : false;
     }
 };
 

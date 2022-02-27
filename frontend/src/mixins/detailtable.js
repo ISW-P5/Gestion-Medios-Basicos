@@ -58,18 +58,24 @@ export default {
         },
     },
     created() {
-        const title = 'Admin | ' + this.get_title() + ' ' + this.$options.panel_title;
-        const panel_title = this.get_title() + ' ' + this.$options.panel_title;
-        if (title) {
-            document.title = title;
-            this.$store.state.panelTitle = panel_title || 'Panel Administrativo';
-        }
+        // Check permissions
+        if (!this.privilege_required(this.privilege, this.privileges.VIEW)) {
+            this.$router.push({name: 'dashboard'}).then(r => {});
+        } else {
+            // Set title
+            const title = 'Admin | ' + this.get_title() + ' ' + this.$options.panel_title;
+            const panel_title = this.get_title() + ' ' + this.$options.panel_title;
+            if (title) {
+                document.title = title;
+                this.$store.state.panelTitle = panel_title || 'Panel Administrativo';
+            }
 
-        if (this.$route.name !== (this.route + '.add')) {
-            this.get_queryset();
-        }
-        if (this.$route.name === (this.route + '.add') || this.$route.name === (this.route + '.edit')) {
-            this.metadata_queryset();
+            if (this.$route.name !== (this.route + '.add')) {
+                this.get_queryset();
+            }
+            if (this.$route.name === (this.route + '.add') || this.$route.name === (this.route + '.edit')) {
+                this.metadata_queryset();
+            }
         }
     }
 };

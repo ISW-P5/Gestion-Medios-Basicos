@@ -47,27 +47,44 @@ class BasicMediumExpedientViewSet(FilterViewSetMixin):
 
     def get_filter(self, queryset, value):
         """Filtrar elementos segun: Nombre, Numero de Inventario, Ubicacion"""
-        return queryset.filter(Q(name__contains=value) |
-                               Q(inventory_number__contains=value) |
-                               Q(location__contains=value))
+        return queryset.filter(Q(name__contains=value) | Q(inventory_number__contains=value) |
+                               Q(location__contains=value) | Q(responsible__username__contains=value) |
+                               Q(responsible__first_name__contains=value) | Q(responsible__last_name__contains=value))
 
 
 class RequestTicketViewSet(FilterViewSetMixin):
     queryset = RequestTicket.objects.all()
     serializer_class = RequestTicketSerializer
 
+    def filter_queryset(self, queryset):
+        # Apply filter with special Permissions (Excluding superusers because it have all permissions)
+        if self.request.user.has_perm('system.own_requestticket') and not self.request.user.is_superuser:
+            queryset = queryset.filter(requester=self.request.user)
+
+        return super(RequestTicketViewSet, self).filter_queryset(queryset)
+
     def get_filter(self, queryset, value):
-        # TODO: Not finished yet
-        return super(RequestTicketViewSet, self).get_filter(queryset, value)
+        """Filtrar elementos segun: Nombre y Numero de Inventario del Medio basico, Departamento, Solicitante"""
+        return queryset.filter(Q(departament__contains=value) | Q(basic_medium__inventory_number__contains=value) |
+                               Q(basic_medium__name__contains=value) | Q(requester__username__contains=value))
 
 
 class MovementTicketViewSet(FilterViewSetMixin):
     queryset = MovementTicket.objects.all()
     serializer_class = MovementTicketSerializer
 
+    def filter_queryset(self, queryset):
+        # Apply filter with special Permissions (Excluding superusers because it have all permissions)
+        if self.request.user.has_perm('system.own_movementticket') and not self.request.user.is_superuser:
+            queryset = queryset.filter(requester=self.request.user)
+
+        return super(MovementTicketViewSet, self).filter_queryset(queryset)
+
     def get_filter(self, queryset, value):
-        # TODO: Not finished yet
-        return super(MovementTicketViewSet, self).get_filter(queryset, value)
+        """Filtrar elementos segun: Nombre y Numero de Inventario del Medio basico, Lugar nuevo y actual, Solicitante"""
+        return queryset.filter(Q(actual_location__contains=value) | Q(new_location__contains=value) |
+                               Q(basic_medium__inventory_number__contains=value) |
+                               Q(basic_medium__name__contains=value) | Q(requester__username__contains=value))
 
 
 class ResponsibilityCertificateViewSet(FilterViewSetMixin):
@@ -76,7 +93,5 @@ class ResponsibilityCertificateViewSet(FilterViewSetMixin):
 
     def get_filter(self, queryset, value):
         """Filtrar elementos segun: Nombre y Numero de Inventario del Medio basico, Carnet, Usuario del responsable"""
-        return queryset.filter(Q(identity_card__contains=value) |
-                               Q(basic_medium__inventory_number__contains=value) |
-                               Q(basic_medium__name__contains=value) |
-                               Q(responsible__username__contains=value))
+        return queryset.filter(Q(identity_card__contains=value) | Q(basic_medium__inventory_number__contains=value) |
+                               Q(basic_medium__name__contains=value) | Q(responsible__username__contains=value))

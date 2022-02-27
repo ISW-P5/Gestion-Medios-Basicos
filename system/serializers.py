@@ -3,6 +3,7 @@ from collections import OrderedDict
 from django.contrib.auth.models import User, Permission, Group
 from django.utils.timezone import now
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
@@ -45,8 +46,8 @@ class UserSerializer(SimpleUserSerializer):
     group_id = serializers.IntegerField(write_only=True, required=False)
 
     class Meta(SimpleUserSerializer.Meta):
-        fields = ('url', 'id', 'username', 'password', 'email', 'first_name', 'last_name', 'is_staff', 'group_id',
-                  'role', 'role_id', 'permissions')
+        fields = ('url', 'id', 'username', 'password', 'email', 'first_name', 'last_name', 'is_staff', 'is_superuser',
+                  'group_id', 'role', 'role_id', 'permissions')
 
         # These fields are only editable (not displayed) and have to be a part of 'fields' tuple
         extra_kwargs = {'password': {'write_only': True, 'required': False}}
@@ -102,8 +103,8 @@ class UserSerializer(SimpleUserSerializer):
     @staticmethod
     def get_action_permissions(action):
         """Obtenemos los permisos segun el sistema"""
-        # Permissions: 0 - View, 1 - Add, 2 - Modify, 3 - Delete
-        return 0 if action == 'view' else 1 if action == 'add' else 2 if action == 'change' else 3 if action == 'delete' else -1
+        # Permissions: 0 - View, 1 - Add, 2 - Modify, 3 - Delete, 4 - OWN
+        return 0 if action == 'view' else 1 if action == 'add' else 2 if action == 'change' else 3 if action == 'delete' else 4 if action == 'own' else -1
 
     def get_role_id(self, obj):
         """Devolver el ID del Rol"""
@@ -113,6 +114,7 @@ class UserSerializer(SimpleUserSerializer):
 
 class SimpleBasicMediumExpedientSerializer(serializers.ModelSerializer):
     """Serializador Simple Modelo Medio Basico"""
+
     class Meta:
         model = BasicMediumExpedient
         fields = ('url', 'id', 'name', 'inventory_number', 'responsible', 'location', 'is_enable')
@@ -130,16 +132,64 @@ class BasicMediumExpedientSerializer(SimpleBasicMediumExpedientSerializer):
 
 class RequestTicketSerializer(serializers.ModelSerializer):
     """Serializador Modelo Vale de Solicitud"""
+    owner = SimpleUserSerializer(source='requester', read_only=True)
+    medium = SimpleBasicMediumExpedientSerializer(source='basic_medium', read_only=True)
+
     class Meta:
         model = RequestTicket
-        fields = ('url', 'requester', 'basic_medium', 'departament', 'accepted')
+        fields = ('url', 'id', 'basic_medium', 'medium', 'requester', 'owner', 'departament', 'accepted')
+        extra_kwargs = {
+            'requester': {'write_only': True},
+            'basic_medium': {'write_only': True},
+            'accepted': {'required': False}
+        }
+    
+    def create(self, validated_data):
+        # Aplicar restricciones del permiso especial
+        if (self.context.get('request').user.has_perm('system.own_requestticket') and
+                not self.context.get('request').user.is_superuser):
+            if validated_data.get('accepted'):
+                raise PermissionDenied(detail='Cant create Vale de Solicitud with accepted true!')
+            if validated_data.get('requester') != self.context.get('request').user:
+                raise PermissionDenied(detail='The requester only can be: ' + self.context.get('request').user.username)
+        return super(RequestTicketSerializer, self).create(validated_data)
+    
+    def update(self, instance, validated_data):
+        # Aplicar restricciones del permiso especial
+        if (self.context.get('request').user.has_perm('system.own_requestticket') and
+                not self.context.get('request').user.is_superuser):
+            if validated_data.get('accepted'):
+                raise PermissionDenied(detail='Cant update Vale de Solicitud with accepted true!')
+            if validated_data.get('requester') != self.context.get('request').user:
+                raise PermissionDenied(detail='The requester only can be: ' + self.context.get('request').user.username)
+        return super(RequestTicketSerializer, self).update(instance, validated_data)
 
 
 class MovementTicketSerializer(serializers.ModelSerializer):
     """Serializador Modelo Vale de Movimiento"""
+    owner = SimpleUserSerializer(source='requester', read_only=True)
+    medium = SimpleBasicMediumExpedientSerializer(source='basic_medium', read_only=True)
+
     class Meta:
         model = MovementTicket
-        fields = ('url', 'requester', 'basic_medium', 'actual_location', 'new_location')
+        fields = ('url', 'basic_medium', 'medium', 'requester', 'owner', 'actual_location', 'new_location')
+        extra_kwargs = {'requester': {'write_only': True}, 'basic_medium': {'write_only': True}}
+
+    def create(self, validated_data):
+        # Aplicar restricciones del permiso especial
+        if (self.context.get('request').user.has_perm('system.own_movementticket') and
+                not self.context.get('request').user.is_superuser):
+            if validated_data.get('requester') != self.context.get('request').user:
+                raise PermissionDenied(detail='The requester only can be: ' + self.context.get('request').user.username)
+        return super(MovementTicketSerializer, self).create(validated_data)
+
+    def update(self, instance, validated_data):
+        # Aplicar restricciones del permiso especial
+        if (self.context.get('request').user.has_perm('system.own_movementticket') and
+                not self.context.get('request').user.is_superuser):
+            if validated_data.get('requester') != self.context.get('request').user:
+                raise PermissionDenied(detail='The requester only can be: ' + self.context.get('request').user.username)
+        return super(MovementTicketSerializer, self).update(instance, validated_data)
 
 
 class ResponsibilityCertificateSerializer(serializers.ModelSerializer):
@@ -150,7 +200,4 @@ class ResponsibilityCertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResponsibilityCertificate
         fields = ('url', 'id', 'identity_card', 'basic_medium', 'medium', 'responsible', 'owner', 'datetime')
-        extra_kwargs = {
-            'responsible': {'write_only': True},
-            'basic_medium': {'write_only': True},
-        }
+        extra_kwargs = {'responsible': {'write_only': True}, 'basic_medium': {'write_only': True}}

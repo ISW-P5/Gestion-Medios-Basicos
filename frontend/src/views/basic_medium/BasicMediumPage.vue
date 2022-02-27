@@ -17,7 +17,7 @@
             <!-- Data Table -->
             <CCardBody v-else>
                 <CDataTable
-                    :items="data.items"
+                    :items="items"
                     :fields="fields"
                     v-model:tableFilterValue="appliedFilter"
                     @update:table-filter-value="(v) => this.filter = v"
@@ -63,11 +63,6 @@
                             </CLink>
                         </td>
                         <td v-else>{{ item.name }}</td>
-                    </template>
-                    <template #owner="{item}">
-                        <td>
-                            {{ get_full_name(item) }}
-                        </td>
                     </template>
                     <template #is_enable="{item}">
                         <td>
@@ -126,7 +121,7 @@ const fields = [
     { key: 'id', label: '#', _style: 'width:1%' },
     { key: 'name', label: 'Nombre' },
     { key: 'inventory_number', label: 'Numero de Inventario' },
-    { key: 'owner', label: 'Responsable', sorter: false, filter: false },
+    { key: 'responsible', label: 'Responsable', filter: false },
     { key: 'location', label: 'Ubicacion' },
     { key: 'is_enable', label: 'Estado', filter: false },
     { key: 'actions', label: 'Acciones', sorter: false, filter: false }
@@ -143,6 +138,19 @@ export default {
             route: 'basic_medium',
             privilege: 'basicmediumexpedient',
             fields,
+        }
+    },
+    computed: {
+        // Cleared items
+        items() {
+            let list = [];
+            this.data.items.forEach((value) => {
+                list.push({
+                    responsible: this.get_full_name(value),
+                    ...value
+                });
+            });
+            return list;
         }
     },
     methods: {

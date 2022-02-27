@@ -68,7 +68,6 @@
                     :horizontal="horizontal"
                     :options="groups"
                     placeholder="Seleccione un Rol"
-                    required
                     :value.sync="group_id"
                   />
                 <CFormGroup class="form-group form-row">

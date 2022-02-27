@@ -274,7 +274,7 @@ const Service = {
                 vm.$store.commit('removeLoading');
 
                 // Redirect
-                vm.$router.push({name: 'basic_medium'}).then(r => {});
+                vm.$router.push({name: vm.route}).then(r => {});
             });
     },
     edit_BasicMedium(vm, id) {
@@ -291,7 +291,7 @@ const Service = {
                 vm.$store.commit('removeLoading');
 
                 // Redirect
-                vm.$router.push({name: 'basic_medium.detail', params: {id:id}}).then(r => {});
+                vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});
             });
     },
 
@@ -357,7 +357,7 @@ const Service = {
                 vm.$store.commit('removeLoading');
 
                 // Redirect
-                vm.$router.push({name: 'responsibility_certificate'}).then(r => {});
+                vm.$router.push({name: vm.route}).then(r => {});
             });
     },
     edit_ResponsibilityCertificate(vm, id) {
@@ -372,7 +372,7 @@ const Service = {
                 vm.$store.commit('removeLoading');
 
                 // Redirect
-                vm.$router.push({name: 'responsibility_certificate.detail', params: {id:id}}).then(r => {});
+                vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});
             });
     },
 
@@ -440,7 +440,7 @@ const Service = {
                 vm.$store.commit('removeLoading');
 
                 // Redirect
-                vm.$router.push({name: 'user'}).then(r => {});
+                vm.$router.push({name: vm.route}).then(r => {});
             });
     },
     edit_User(vm, id) {
@@ -462,13 +462,92 @@ const Service = {
                 vm.$store.commit('removeLoading');
 
                 // Redirect
-                vm.$router.push({name: 'user.detail', params: {id:id}}).then(r => {});
+                vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});
             });
     },
 
     // List, Detail, Remove, Add and Edit Movement Ticket
 
     // List, Detail, Remove, Add and Edit Request Ticket
+    getList_RequestTicket(vm) {
+        this._create_request(vm, axios.get('/api/request_ticket/', {
+                params: {
+                    page: vm.page,
+                    per_page: vm.per_page,
+                    filter: vm.appliedFilter,
+                    ordering: vm.ordering,
+                }
+            }), function (sender, response) {
+                vm.data = response.data;
+                vm.loading = false;
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    detail_RequestTicket(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/request_ticket/' + String(id) + '/'),
+            function (sender, response) {
+                vm.id = response.data.id;
+                vm.basic_medium_id = response.data.medium.id;
+                vm.basic_medium_name = response.data.medium.name;
+                vm.departament = response.data.departament;
+                vm.requester_id = response.data.owner.id;
+                let value = response.data.owner.first_name + ' ' + response.data.owner.last_name;
+                vm.requester_name = (value.length === 0 || !value.trim()) ? response.data.owner.username : value;
+                vm.accepted = response.data.accepted;
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    remove_RequestTicket(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.delete('/api/request_ticket/' + String(id) + '/'),
+            function (sender, response) {
+                // Remove from list
+                if (vm.data) {
+                    vm.data.items = vm.data.items.filter((value, _, __) => value.id !== id);
+                }
+                vm.finish_delete();
+
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            }, false);
+    },
+    add_RequestTicket(vm) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.post('/api/request_ticket/', {
+                departament: vm.departament,
+                basic_medium: vm.basic_medium_id,
+                requester: vm.requester_id,
+                accepted: vm.accepted,
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect
+                vm.$router.push({name: vm.route}).then(r => {});
+            });
+    },
+    edit_RequestTicket(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.put('/api/request_ticket/' + String(id) + '/', {
+                departament: vm.departament,
+                basic_medium: vm.basic_medium_id,
+                requester: vm.requester_id,
+                accepted: vm.accepted,
+            }),
+            function (sender, response) {
+                // Remove loading
+                vm.$store.commit('removeLoading');
+
+                // Redirect
+                vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});
+            });
+    },
 };
 
 export default Service;

@@ -2,10 +2,10 @@
     <div v-if="this.$route.name === route">
         <CCard>
             <CCardHeader>
-                <CIcon name="cil-book"/>
-                Listado de Usuarios<span v-model="data.count" v-if="data"> ({{ data.count }})</span>
+                <CIcon name="cil-file"/>
+                Listado de Vales de Solicitud<span v-model="data.count" v-if="data"> ({{ data.count }})</span>
                 <div class="card-header-actions" v-if="privilege_required(privilege, privileges.ADD)">
-                    <CButton color="success" size="sm" :to="{ name: 'user.add' }" :disabled="!(data)">
+                    <CButton color="success" size="sm" :to="{ name: 'request_ticket.add' }" :disabled="!(data)">
                         <CIcon name="cil-plus" /> Agregar
                     </CButton>
                 </div>
@@ -56,33 +56,25 @@
                     </template>
 
                     <!-- Table Custom Fields -->
-                    <template #username="{item}">
+                    <template #basic_medium="{item}">
                         <td v-if="privilege_required(privilege, privileges.VIEW)">
-                            <CLink :to="{name: 'user.detail', params: {id:item.id}}">
-                                {{ item.username }}
+                            <CLink :to="{name: 'request_ticket.detail', params: {id:item.id}}">
+                                {{ item.basic_medium }}
                             </CLink>
                         </td>
-                        <td v-else>{{ item.username }}</td>
+                        <td v-else>{{ item.basic_medium }}</td>
                     </template>
-                    <template #is_staff="{item}">
+                    <template #accepted="{item}">
                         <td>
-                            <CBadge v-if="item.is_staff" color="success">Verdadero</CBadge>
+                            <CBadge v-if="item.accepted" color="success">Verdadero</CBadge>
                             <CBadge v-else color="danger">Falso</CBadge>
-                        </td>
-                    </template>
-                    <template #groups="{item}">
-                        <td v-if="item.groups">
-                            <CBadge color="white">{{item.groups}}</CBadge>
-                        </td>
-                        <td v-else>
-                            <CBadge color="dark">Sin Cargo</CBadge>
                         </td>
                     </template>
                     <template #actions="{item}">
                         <td class="py-2">
                             <CButton color="warning" size="sm" class="mr-2 text-white"
                                      v-if="privilege_required(privilege, privileges.MODIFY)"
-                                     :to="{name: 'user.edit', params: {id:item.id}}">
+                                     :to="{name: 'request_ticket.edit', params: {id:item.id}}">
                                 <CIcon name="cil-pencil" /> Editar
                             </CButton>
                             <CButton color="danger" square size="sm"
@@ -94,7 +86,7 @@
                             <CButton color="success" size="sm" class="text-white"
                                      v-if="!privilege_required(privilege, privileges.MODIFY) &&
                                            !privilege_required(privilege, privileges.DELETE)"
-                                     :to="{name: 'user.detail', params: {id:item.id}}">
+                                     :to="{name: 'request_ticket.detail', params: {id:item.id}}">
                                 <CIcon name="cil-file" /> Ver
                             </CButton>
                         </td>
@@ -125,27 +117,26 @@ import validator from "../../helpers/validator";
 import loading from "../../mixins/loading";
 import table_list from "../../mixins/tablelist";
 
+
 const fields = [
     { key: 'id', label: '#', _style: 'width:1%' },
-    { key: 'username', label: 'Usuario' },
-    { key: 'email', label: 'Correo electrónico' },
-    { key: 'first_name', label: 'Nombre' },
-    { key: 'last_name', label: 'Apellido' },
-    { key: 'is_staff', label: 'Es staff', filter: false },
-    { key: 'groups', label: 'Cargo', filter: false },
+    { key: 'basic_medium', label: 'Medio Basico' },
+    { key: 'requester', label: 'Solicitante' },
+    { key: 'departament', label: 'Departamento' },
+    { key: 'accepted', label: '¿Fue aceptado?', filter: false },
     { key: 'actions', label: 'Acciones', sorter: false, filter: false }
 ];
 
 export default {
-    name: "UserPage",
-    title: 'Admin | Usuario',
-    panel_title: 'Lista de Usuarios',
+    name: "RequestTicketPage",
+    title: 'Admin | Vales de Solicitud',
+    panel_title: 'Lista de los Vales de Solicitud',
     mixins: [loading, table_list],
     data() {
         return {
             // Static Data
-            route: 'user',
-            privilege: 'user',
+            route: 'request_ticket',
+            privilege: 'requestticket',
             fields,
         }
     },
@@ -155,7 +146,8 @@ export default {
             let list = [];
             this.data.items.forEach((value) => {
                 list.push({
-                    groups: value.role,
+                    basic_medium: value.medium.name + ' - ' + value.medium.inventory_number,
+                    requester: this.get_full_name(value),
                     ...value
                 });
             });
@@ -165,15 +157,15 @@ export default {
     methods: {
         // Extract Data
         get_full_name(item) {
-            let value = item.first_name + ' ' + item.last_name;
-            return validator.isEmpty(value) ? item.username : value;
+            let value = item.owner.first_name + ' ' + item.owner.last_name;
+            return validator.isEmpty(value) ? item.owner.username : value;
         },
         // QuerySet (CRUD)
         get_queryset() {
-            this.$services.getList_User(this);
+            this.$services.getList_RequestTicket(this);
         },
         remove() {
-            this.$services.remove_User(this, this.delete_data.id);
+            this.$services.remove_RequestTicket(this, this.delete_data.id);
         },
     },
 }
