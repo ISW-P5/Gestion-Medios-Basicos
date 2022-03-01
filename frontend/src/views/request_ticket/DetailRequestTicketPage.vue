@@ -189,11 +189,9 @@ export default {
             this.id = '';
             this.basic_medium_id = 0;
             this.basic_medium_name = '';
-            this.basic_medium = [];
             this.departament = '';
             this.requester_id = 0;
             this.requester_name = '';
-            this.responsible = [];
             this.accepted = false;
         },
         add_queryset() {
@@ -214,7 +212,7 @@ export default {
         metadata_queryset() {
             this.$services.getList_Mediums(this);
             if (this.$store.state.user.is_superuser || !this.privilege_required(this.privilege, this.privileges.OWN)) {
-                this.$services.getList_Responsible(this);
+                this.$services.getList_ResponsibleTicket(this);
             } else {
                 this.requester_id = this.$store.state.user.id;
             }

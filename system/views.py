@@ -7,6 +7,7 @@ from django.http import JsonResponse, HttpResponse
 
 from .libs.avatar import get_svg_avatar
 from .models import BasicMediumExpedient
+from .fixtures import generate_fixtures
 from .utils import create_default_groups
 
 
@@ -85,6 +86,21 @@ def responsible_metadata(request):
 
 
 @login_required
+def responsible_ticket_metadata(request):
+    """Obtener todos los Jefe de Departamento con su nombre de usuario o nombre completo"""
+    return JsonResponse({
+        'responsible': [
+            {
+                'value': r.id,
+                'label': r.username
+                if r.first_name.strip() == '' or r.last_name.strip() == '' else (r.first_name + ' ' + r.last_name)
+            }
+            for r in User.objects.filter(is_staff=True, groups__name='Jefe de Departamento')
+        ]
+    })
+
+
+@login_required
 def basic_medium_without_certificate_metadata(request):
     """Obtener Medios Basicos que esten habilitados y que no tengan un acta de responsabilidad"""
     # Extraigo el uid (Para incluir el ID del propio medio asignado)
@@ -133,3 +149,11 @@ def roles_metadata(request):
             } for r in Group.objects.all()
         ]
     })
+
+
+@login_required
+def generate_fixtures(request):
+    if request.user.is_superuser:
+        generate_fixtures(250)
+        return HttpResponse(content='OK', status=200)
+    return HttpResponse(content='YOU ARE NOT SUPERUSER!', status=200)

@@ -8,6 +8,15 @@
                     <CContainer fluid>
                         <transition name="fade" mode="out-in">
                             <div>
+                                <CToaster :autohide="5000">
+                                    <template v-for="toast in $store.state.activeToasts">
+                                        <CToast :key="'toast' + toast" :show="true" header="Error" color="danger"
+                                            v-html="$store.state.textToasts">
+                                            {{ $store.state.textToasts }}
+                                        </CToast>
+                                    </template>
+                                </CToaster>
+
                                 <router-view :key="$route.path"></router-view>
                                 <CElementCover v-if="$store.state.loading" :opacity="0.8">
                                     <h1 class="d-inline">Cargando... </h1><CSpinner size="5xl" color="success"/>

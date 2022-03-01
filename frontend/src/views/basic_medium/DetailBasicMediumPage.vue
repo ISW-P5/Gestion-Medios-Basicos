@@ -52,7 +52,7 @@
                     required
                     :value.sync="location"
                     :isValid="is_valid_location"
-                    invalid-feedback="No puede estar vacio y solo puede contener letras."
+                    invalid-feedback="No puede estar vacio."
                   />
                 <CFormGroup class="form-group form-row">
                     <template #label>

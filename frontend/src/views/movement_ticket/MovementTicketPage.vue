@@ -64,6 +64,12 @@
                         </td>
                         <td v-else>{{ item.basic_medium }}</td>
                     </template>
+                    <template #accepted="{item}">
+                        <td>
+                            <CBadge v-if="item.accepted" color="success">Verdadero</CBadge>
+                            <CBadge v-else color="danger">Falso</CBadge>
+                        </td>
+                    </template>
                     <template #actions="{item}">
                         <td class="py-2">
                             <CButton color="warning" size="sm" class="mr-2 text-white"
@@ -119,6 +125,7 @@ const fields = [
     { key: 'requester', label: 'Solicitante' },
     { key: 'actual_location', label: 'Ubicacion Actual' },
     { key: 'new_location', label: 'Ubicacion Nueva' },
+    { key: 'accepted', label: '¿Fue aceptado?', filter: false },
     { key: 'actions', label: 'Acciones', sorter: false, filter: false }
 ];
 

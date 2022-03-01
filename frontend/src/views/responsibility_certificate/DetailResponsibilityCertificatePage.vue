@@ -190,7 +190,7 @@ export default {
         },
         metadata_queryset() {
             this.$services.getList_MediumsCertificate(this);
-            this.$services.getList_Responsible(this);
+            this.$services.getList_ResponsibleTicket(this);
         },
         remove() {
             this.$services.remove_ResponsibilityCertificate(this, this.id);

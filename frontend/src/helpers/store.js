@@ -16,10 +16,16 @@ const state = {
         username: 'Unknown',
         permissions: [],
         is_superuser: false,
-    }
+    },
+    activeToasts: 0,
+    textToasts: 0,
 };
 
 const mutations = {
+    addToasts(state, text) {
+        state.activeToasts++;
+        state.textToasts = text;
+    },
     toggleSidebarDesktop(state) {
         const sidebarOpened = [true, 'responsive'].includes(state.sidebarShow);
         state.sidebarShow = sidebarOpened ? false : 'responsive';

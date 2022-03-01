@@ -75,6 +75,17 @@ const Service = {
                     console.log("RESPONSE", e.response);
                 }
                 switch (e.response.status) {
+                    case 400:
+                        // Collect Errors
+                        let errors = '';
+                        for (let key in e.response.data) {
+                            if (e.response.data.hasOwnProperty(key)) {
+                                errors += '<li>' + e.response.data[key][0] + '</li>';
+                            }
+                        }
+                        vm.$store.commit('addToasts', '<div class="pt-2 pl-3">' +
+                            '<h3>Errores:</h3><ul>' + errors + '</ul></div>')
+                        break;
                     case 403:
                         if (e.response.data.error === 'CSRF token missing or incorrect.') {
                             return new Promise((resolve) => {
@@ -178,6 +189,17 @@ const Service = {
                 vm.$store.commit('removeLoading');
             });
     },
+    getList_ResponsibleTicket(vm, all=false) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/responsible_ticket/', {
+                params: {all:all}
+            }),
+            function (sender, response) {
+                vm.responsible = response.data.responsible;
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
     getList_MediumsCertificate(vm, included = -1) {
         vm.$store.commit('setLoading');
         this._create_request(vm, axios.get('/api/mediums_certificate/', {
@@ -205,6 +227,16 @@ const Service = {
         this._create_request(vm, axios.get('/api/roles/'),
             function (sender, response) {
                 vm.groups = response.data.groups;
+                // Remove loading
+                vm.$store.commit('removeLoading');
+            });
+    },
+    get_BasicMedium(vm, id) {
+        vm.$store.commit('setLoading');
+        this._create_request(vm, axios.get('/api/basic_medium/' + String(id) + '/'),
+            function (sender, response) {
+                vm.actual_location = response.data.location;
+
                 // Remove loading
                 vm.$store.commit('removeLoading');
             });
@@ -495,6 +527,7 @@ const Service = {
                 vm.requester_id = response.data.owner.id;
                 let value = response.data.owner.first_name + ' ' + response.data.owner.last_name;
                 vm.requester_name = (value.length === 0 || !value.trim()) ? response.data.owner.username : value;
+                vm.accepted = response.data.accepted;
 
                 // Remove loading
                 vm.$store.commit('removeLoading');
@@ -521,6 +554,7 @@ const Service = {
                 requester: vm.requester_id,
                 actual_location: vm.actual_location,
                 new_location: vm.new_location,
+                accepted: vm.accepted,
             }),
             function (sender, response) {
                 // Remove loading
@@ -537,6 +571,7 @@ const Service = {
                 requester: vm.requester_id,
                 actual_location: vm.actual_location,
                 new_location: vm.new_location,
+                accepted: vm.accepted,
             }),
             function (sender, response) {
                 // Remove loading

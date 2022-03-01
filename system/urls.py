@@ -1,9 +1,11 @@
 from django.urls import path, include
+from django.conf import settings
 from django.contrib.auth.views import LoginView, LogoutView
 from rest_framework import routers
 
 from .views import (index, admin, avatar, login_api, user_data_api, csrf_api, basic_medium_metadata,
-                    responsible_metadata, basic_medium_without_certificate_metadata, roles_metadata)
+                    responsible_ticket_metadata, responsible_metadata, basic_medium_without_certificate_metadata,
+                    roles_metadata, generate_fixtures)
 from .api import (UserViewSet, BasicMediumExpedientViewSet, RequestTicketViewSet,
                   MovementTicketViewSet, ResponsibilityCertificateViewSet)
 
@@ -31,8 +33,13 @@ urlpatterns = [
     path('api/csrf/', csrf_api, name="csrf_api"),
     path('api/user/', user_data_api, name="user_data"),
     path('api/responsible/', responsible_metadata, name='responsible_list'),
+    path('api/responsible_ticket/', responsible_ticket_metadata, name='responsible_ticket_list'),
     path('api/roles/', roles_metadata, name='roles_list'),
     path('api/mediums/', basic_medium_metadata, name='basic_medium_list'),
     path('api/mediums_certificate/', basic_medium_without_certificate_metadata, name='basic_medium_certificate_list'),
     path('api/', include(router.urls)),
 ]
+
+# This is required for static files while in development mode. (DEBUG=TRUE)
+if settings.DEBUG:
+    urlpatterns += [path('fixtures/', generate_fixtures)]

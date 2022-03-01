@@ -44,6 +44,7 @@
                     :value.sync="actual_location"
                     :isValid="is_valid_actual_location"
                     invalid-feedback="No puede estar vacio."
+                    readonly
                   />
                 <CInput
                     label="Ubicacion Nueva *"
@@ -54,6 +55,19 @@
                     :isValid="is_valid_new_location"
                     invalid-feedback="No puede estar vacio."
                   />
+                <CFormGroup class="form-group form-row"
+                            v-if="this.$store.state.user.is_superuser || !privilege_required(privilege, privileges.OWN)">
+                    <template #label>
+                        <label class="col-form-label col-md-2">¿Fue aceptado?</label>
+                    </template>
+                    <template #input>
+                        <CSwitch
+                            color="success"
+                            :checked.sync="accepted"
+                            shape="pill"
+                        />
+                    </template>
+                </CFormGroup>
                 <CButton type="submit" @click="add" class="mr-1" color="success"
                          v-if="this.$route.name === (route + '.add') && privilege_required(privilege, privileges.ADD)">
                     <CIcon name="cil-check-circle"/> Enviar
@@ -143,6 +157,12 @@ export default {
             requester_id: 0,
             requester_name: '',
             responsible: [],
+            accepted: false,
+        }
+    },
+    watch: {
+        basic_medium_id(value, _) {
+            this.$services.get_BasicMedium(this, value);
         }
     },
     computed: {
@@ -153,6 +173,7 @@ export default {
                 {'p': 'Solicitante', 'v': this.requester_name},
                 {'p': 'Ubicacion Actual', 'v': this.actual_location},
                 {'p': 'Ubicacion Nueva', 'v': this.new_location},
+                {'p': 'Esta Aceptado el Vale', 'v': this.accepted},
             ];
         }
     },
@@ -192,17 +213,22 @@ export default {
             this.id = '';
             this.basic_medium_id = 0;
             this.basic_medium_name = '';
-            this.basic_medium = [];
             this.actual_location = '';
             this.new_location = '';
             this.requester_id = 0;
             this.requester_name = '';
-            this.responsible = [];
+            this.accepted = false;
         },
         add_queryset() {
+            if (!(this.$store.state.user.is_superuser || !this.privilege_required(this.privilege, this.privileges.OWN))) {
+                this.accepted = false;
+            }
             this.$services.add_MovementTicket(this);
         },
         edit_queryset() {
+            if (!(this.$store.state.user.is_superuser || !this.privilege_required(this.privilege, this.privileges.OWN))) {
+                this.accepted = false;
+            }
             this.$services.edit_MovementTicket(this, this.$route.params.id);
         },
         get_queryset() {
@@ -211,7 +237,7 @@ export default {
         metadata_queryset() {
             this.$services.getList_Mediums(this);
             if (this.$store.state.user.is_superuser || !this.privilege_required(this.privilege, this.privileges.OWN)) {
-                this.$services.getList_Responsible(this);
+                this.$services.getList_ResponsibleTicket(this);
             } else {
                 this.requester_id = this.$store.state.user.id;
             }

@@ -20,7 +20,7 @@ Vue.use(VueRouter);
 const routes = [
     {
         path: '/',
-        name: 'Medios Basicos',
+        name: 'Panel',
         component: TheContainer,
         redirect: '/',
         children: [

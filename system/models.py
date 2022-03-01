@@ -50,9 +50,10 @@ class MovementTicket(models.Model):
     basic_medium = models.ForeignKey(BasicMediumExpedient, on_delete=models.CASCADE, null=False, blank=False,
                                      verbose_name='Medio Basico')
     actual_location = models.CharField(max_length=255, null=False, blank=False, verbose_name='Ubicacion Actual',
-                                       validators=[validate_only_letters])
+                                       validators=[validate_only_letters_numbers])
     new_location = models.CharField(max_length=255, null=False, blank=False, verbose_name='Ubicacion Nueva',
-                                    validators=[validate_only_letters])
+                                    validators=[validate_only_letters_numbers])
+    accepted = models.BooleanField(default=False, verbose_name='Esta Aceptado el Vale')
 
     class Meta:
         verbose_name = 'Vale de Movimiento'

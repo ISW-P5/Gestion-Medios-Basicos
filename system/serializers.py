@@ -55,7 +55,7 @@ class UserSerializer(SimpleUserSerializer):
     def create(self, validated_data):
         """Override Create and add date_joined how now"""
         group = validated_data.get('group_id', 0)
-        if group <= 0:
+        if group > 0:
             validated_data.pop('group_id')
         instance = super(UserSerializer, self).create(validated_data)
         instance.date_joined = now()
@@ -152,7 +152,12 @@ class RequestTicketSerializer(serializers.ModelSerializer):
                 raise PermissionDenied(detail='Cant create Vale de Solicitud with accepted true!')
             if validated_data.get('requester') != self.context.get('request').user:
                 raise PermissionDenied(detail='The requester only can be: ' + self.context.get('request').user.username)
-        return super(RequestTicketSerializer, self).create(validated_data)
+        instance = super(RequestTicketSerializer, self).create(validated_data)
+        if validated_data.get('accepted'):
+            basic_medium = validated_data.get('basic_medium')
+            basic_medium.location = validated_data.get('departament')
+            basic_medium.save()
+        return instance
     
     def update(self, instance, validated_data):
         # Aplicar restricciones del permiso especial
@@ -162,7 +167,12 @@ class RequestTicketSerializer(serializers.ModelSerializer):
                 raise PermissionDenied(detail='Cant update Vale de Solicitud with accepted true!')
             if validated_data.get('requester') != self.context.get('request').user:
                 raise PermissionDenied(detail='The requester only can be: ' + self.context.get('request').user.username)
-        return super(RequestTicketSerializer, self).update(instance, validated_data)
+        instance = super(RequestTicketSerializer, self).update(instance, validated_data)
+        if validated_data.get('accepted'):
+            basic_medium = validated_data.get('basic_medium')
+            basic_medium.location = validated_data.get('departament')
+            basic_medium.save()
+        return instance
 
 
 class MovementTicketSerializer(serializers.ModelSerializer):
@@ -172,7 +182,8 @@ class MovementTicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MovementTicket
-        fields = ('url', 'id', 'basic_medium', 'medium', 'requester', 'owner', 'actual_location', 'new_location')
+        fields = ('url', 'id', 'basic_medium', 'medium', 'requester', 'owner', 'actual_location', 'new_location',
+                  'accepted')
         extra_kwargs = {'requester': {'write_only': True}, 'basic_medium': {'write_only': True}}
 
     def create(self, validated_data):
@@ -181,7 +192,12 @@ class MovementTicketSerializer(serializers.ModelSerializer):
                 not self.context.get('request').user.is_superuser):
             if validated_data.get('requester') != self.context.get('request').user:
                 raise PermissionDenied(detail='The requester only can be: ' + self.context.get('request').user.username)
-        return super(MovementTicketSerializer, self).create(validated_data)
+        instance = super(MovementTicketSerializer, self).create(validated_data)
+        if validated_data.get('accepted'):
+            basic_medium = validated_data.get('basic_medium')
+            basic_medium.location = validated_data.get('new_location')
+            basic_medium.save()
+        return instance
 
     def update(self, instance, validated_data):
         # Aplicar restricciones del permiso especial
@@ -189,7 +205,12 @@ class MovementTicketSerializer(serializers.ModelSerializer):
                 not self.context.get('request').user.is_superuser):
             if validated_data.get('requester') != self.context.get('request').user:
                 raise PermissionDenied(detail='The requester only can be: ' + self.context.get('request').user.username)
-        return super(MovementTicketSerializer, self).update(instance, validated_data)
+        instance = super(MovementTicketSerializer, self).update(instance, validated_data)
+        if validated_data.get('accepted'):
+            basic_medium = validated_data.get('basic_medium')
+            basic_medium.location = validated_data.get('new_location')
+            basic_medium.save()
+        return instance
 
 
 class ResponsibilityCertificateSerializer(serializers.ModelSerializer):
