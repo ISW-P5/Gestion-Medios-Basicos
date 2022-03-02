@@ -11,7 +11,7 @@ from .api import (UserViewSet, BasicMediumExpedientViewSet, RequestTicketViewSet
 
 
 # Incluyo el enrutador de los ViewSet declarados para el API
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r'users', UserViewSet)
 router.register(r'basic_medium', BasicMediumExpedientViewSet)
 router.register(r'request_ticket', RequestTicketViewSet)

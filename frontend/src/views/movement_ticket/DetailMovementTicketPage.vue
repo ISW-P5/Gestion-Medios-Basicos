@@ -3,6 +3,12 @@
         <CCardHeader v-if="this.$route.name === (route + '.add')">
             <CIcon name="cil-plus"/>
             Añadir Vale de Movimiento
+            <div class="card-header-actions" v-if="privilege_required(privilege, privileges.ADD)">
+                <CButton color="danger" size="sm"
+                         :to="{name: 'movement_ticket', params: {id:$route.params.id}}">
+                    <CIcon name="cil-ban" /> Cancelar
+                </CButton>
+            </div>
         </CCardHeader>
         <CCardHeader v-else>
             <CIcon name="cil-library"/>

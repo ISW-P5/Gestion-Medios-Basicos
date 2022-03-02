@@ -10,7 +10,7 @@
                             <div>
                                 <CToaster :autohide="5000">
                                     <template v-for="toast in $store.state.activeToasts">
-                                        <CToast :key="'toast' + toast" :show="true" header="Error" color="danger"
+                                        <CToast :key="'toast' + toast" :show="true" :color="$store.state.typeToasts"
                                             v-html="$store.state.textToasts">
                                             {{ $store.state.textToasts }}
                                         </CToast>

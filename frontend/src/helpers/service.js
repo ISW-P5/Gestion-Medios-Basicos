@@ -83,8 +83,8 @@ const Service = {
                                 errors += '<li>' + e.response.data[key][0] + '</li>';
                             }
                         }
-                        vm.$store.commit('addToasts', '<div class="pt-2 pl-3">' +
-                            '<h3>Errores:</h3><ul>' + errors + '</ul></div>')
+                        vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                            '<h3>Errores:</h3><ul>' + errors + '</ul></div>'});
                         break;
                     case 403:
                         if (e.response.data.error === 'CSRF token missing or incorrect.') {
@@ -288,6 +288,10 @@ const Service = {
                 }
                 vm.finish_delete();
 
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Medio Basico eliminado con exito!</h5></div>', type: 'success'});
+
                 // Remove loading
                 vm.$store.commit('removeLoading');
             }, false);
@@ -305,6 +309,10 @@ const Service = {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Medio Basico agregado con exito!</h5></div>', type: 'success'});
+
                 // Redirect
                 vm.$router.push({name: vm.route}).then(r => {});
             });
@@ -321,6 +329,10 @@ const Service = {
             function (sender, response) {
                 // Remove loading
                 vm.$store.commit('removeLoading');
+
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Medio Basico editado con exito!</h5></div>', type: 'success'});
 
                 // Redirect
                 vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});
@@ -373,6 +385,10 @@ const Service = {
                 }
                 vm.finish_delete();
 
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Acta de Responsabilidad eliminado con exito!</h5></div>', type: 'success'});
+
                 // Remove loading
                 vm.$store.commit('removeLoading');
             }, false);
@@ -388,6 +404,10 @@ const Service = {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Acta de Responsabilidad agregado con exito!</h5></div>', type: 'success'});
+
                 // Redirect
                 vm.$router.push({name: vm.route}).then(r => {});
             });
@@ -402,6 +422,10 @@ const Service = {
             function (sender, response) {
                 // Remove loading
                 vm.$store.commit('removeLoading');
+
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Acta de Responsabilidad editado con exito!</h5></div>', type: 'success'});
 
                 // Redirect
                 vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});
@@ -452,6 +476,10 @@ const Service = {
                 }
                 vm.finish_delete();
 
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Usuario eliminado con exito!</h5></div>', type: 'success'});
+
                 // Remove loading
                 vm.$store.commit('removeLoading');
             }, false);
@@ -470,6 +498,10 @@ const Service = {
             function (sender, response) {
                 // Remove loading
                 vm.$store.commit('removeLoading');
+
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Usuario agregado con exito!</h5></div>', type: 'success'});
 
                 // Redirect
                 vm.$router.push({name: vm.route}).then(r => {});
@@ -492,6 +524,10 @@ const Service = {
             function (sender, response) {
                 // Remove loading
                 vm.$store.commit('removeLoading');
+
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Usuario editado con exito!</h5></div>', type: 'success'});
 
                 // Redirect
                 vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});
@@ -543,6 +579,10 @@ const Service = {
                 }
                 vm.finish_delete();
 
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Vale de Movimiento eliminado con exito!</h5></div>', type: 'success'});
+
                 // Remove loading
                 vm.$store.commit('removeLoading');
             }, false);
@@ -560,6 +600,10 @@ const Service = {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Vale de Movimiento agregado con exito!</h5></div>', type: 'success'});
+
                 // Redirect
                 vm.$router.push({name: vm.route}).then(r => {});
             });
@@ -576,6 +620,10 @@ const Service = {
             function (sender, response) {
                 // Remove loading
                 vm.$store.commit('removeLoading');
+
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Vale de Movimiento editado con exito!</h5></div>', type: 'success'});
 
                 // Redirect
                 vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});
@@ -626,6 +674,10 @@ const Service = {
                 }
                 vm.finish_delete();
 
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Vale de Solicitud eliminado con exito!</h5></div>', type: 'success'});
+
                 // Remove loading
                 vm.$store.commit('removeLoading');
             }, false);
@@ -642,6 +694,10 @@ const Service = {
                 // Remove loading
                 vm.$store.commit('removeLoading');
 
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Vale de Solicitud agregado con exito!</h5></div>', type: 'success'});
+
                 // Redirect
                 vm.$router.push({name: vm.route}).then(r => {});
             });
@@ -657,6 +713,10 @@ const Service = {
             function (sender, response) {
                 // Remove loading
                 vm.$store.commit('removeLoading');
+
+                // Show Notification
+                vm.$store.commit('addToasts', {text: '<div class="pt-2 pl-3">' +
+                    '<h5>Vale de Solicitud editado con exito!</h5></div>', type: 'success'});
 
                 // Redirect
                 vm.$router.push({name: vm.route + '.detail', params: {id:id}}).then(r => {});

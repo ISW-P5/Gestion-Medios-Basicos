@@ -123,7 +123,7 @@ const fields = [
     { key: 'inventory_number', label: 'Numero de Inventario' },
     { key: 'responsible', label: 'Responsable', filter: false },
     { key: 'location', label: 'Ubicacion' },
-    { key: 'is_enable', label: 'Estado', filter: false },
+    { key: 'is_enable', label: 'Habilitado', filter: false },
     { key: 'actions', label: 'Acciones', sorter: false, filter: false }
 ];
 

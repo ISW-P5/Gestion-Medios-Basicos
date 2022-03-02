@@ -1,5 +1,6 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect, render
@@ -42,6 +43,7 @@ def login_api(request):
     return redirect('/login/')
 
 
+@staff_member_required
 def user_data_api(request):
     """Devolver datos del usuarios autenticado en el sistema"""
     # Set Permissions and create groups by default system if not exists
@@ -67,6 +69,8 @@ def avatar(request, **kwargs):
 
 
 @login_required
+@staff_member_required
+# @permission_required('auth.view_user')  # No se utiliza porque no hay informacion sensible que proteger
 def responsible_metadata(request):
     """Obtener todos los responsables con su nombre de usuario o nombre completo"""
     # Extraemos un parametro all para devolver todos o solo los administradores
@@ -86,6 +90,8 @@ def responsible_metadata(request):
 
 
 @login_required
+@staff_member_required
+# @permission_required('auth.view_user')  # No se utiliza porque no hay informacion sensible que proteger
 def responsible_ticket_metadata(request):
     """Obtener todos los Jefe de Departamento con su nombre de usuario o nombre completo"""
     return JsonResponse({
@@ -101,6 +107,8 @@ def responsible_ticket_metadata(request):
 
 
 @login_required
+@staff_member_required
+@permission_required('system.view_basicmediumexpedient')
 def basic_medium_without_certificate_metadata(request):
     """Obtener Medios Basicos que esten habilitados y que no tengan un acta de responsabilidad"""
     # Extraigo el uid (Para incluir el ID del propio medio asignado)
@@ -126,6 +134,8 @@ def basic_medium_without_certificate_metadata(request):
 
 
 @login_required
+@staff_member_required
+@permission_required('system.view_basicmediumexpedient')
 def basic_medium_metadata(request):
     """Obtener Medios Basicos"""
     return JsonResponse({
@@ -139,6 +149,8 @@ def basic_medium_metadata(request):
 
 
 @login_required
+@staff_member_required
+# @permission_required('auth.view_user')  # No se utiliza porque no hay informacion sensible que proteger
 def roles_metadata(request):
     """Obtener Roles"""
     return JsonResponse({
@@ -152,6 +164,7 @@ def roles_metadata(request):
 
 
 @login_required
+@staff_member_required
 def generate_fixtures(request):
     if request.user.is_superuser:
         generate_fixtures(250)

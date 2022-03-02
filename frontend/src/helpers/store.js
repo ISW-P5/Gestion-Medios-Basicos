@@ -18,12 +18,14 @@ const state = {
         is_superuser: false,
     },
     activeToasts: 0,
-    textToasts: 0,
+    typeToasts: '',
+    textToasts: '',
 };
 
 const mutations = {
-    addToasts(state, text) {
+    addToasts(state, {text, type = 'danger'}) {
         state.activeToasts++;
+        state.typeToasts = type;
         state.textToasts = text;
     },
     toggleSidebarDesktop(state) {
