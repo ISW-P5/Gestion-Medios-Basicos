@@ -8,7 +8,7 @@ from django.http import JsonResponse, HttpResponse
 
 from .libs.avatar import get_svg_avatar
 from .models import BasicMediumExpedient
-from .fixtures import generate_fixtures
+from .fixtures import generate_fixtures as fixtures
 from .utils import create_default_groups
 
 
@@ -167,6 +167,6 @@ def roles_metadata(request):
 @staff_member_required
 def generate_fixtures(request):
     if request.user.is_superuser:
-        generate_fixtures(250)
+        fixtures(250)
         return HttpResponse(content='OK', status=200)
     return HttpResponse(content='YOU ARE NOT SUPERUSER!', status=200)

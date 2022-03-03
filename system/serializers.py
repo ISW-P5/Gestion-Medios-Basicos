@@ -66,6 +66,7 @@ class UserSerializer(SimpleUserSerializer):
         password = validated_data.get('password', None)
         if password is not None:
             instance.set_password(password)
+            instance.save()
         return instance
 
     def update(self, instance, validated_data):
